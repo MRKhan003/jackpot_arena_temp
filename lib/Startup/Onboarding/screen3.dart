@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/AccountAuth/accountCreation.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen2.dart';
 
-class Screen1 extends StatelessWidget {
-  const Screen1({super.key});
+class Screen3 extends StatelessWidget {
+  const Screen3({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,42 +14,38 @@ class Screen1 extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.only(
-              right: 20,
+              left: 30,
             ),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AccountCreation(),
-                  ),
-                );
-              },
-              child: Container(
-                alignment: Alignment.topRight,
-                child: Text(
-                  "Skip",
-                  style: GoogleFonts.notoNastaliqUrdu(
-                    fontSize: 18,
-                  ),
-                  //textAlign: TextAlign.right,
+            child: Container(
+              alignment: Alignment.topLeft,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const Screen2(),
+                    ),
+                  );
+                },
+                child: SvgPicture.asset(
+                  "assets/BackButton.svg",
+                  height: 35,
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: 20,
+            height: 25,
           ),
-          Image.asset(
-            "assets/Mining.png",
-            height: 150,
-            filterQuality: FilterQuality.high,
+          SvgPicture.asset(
+            "assets/Car.svg",
+            height: 180,
           ),
           SizedBox(
             height: 40,
           ),
           Text(
-            "Welcome to\nJackpotArena",
+            "Easy Withdrawals \n to Your Bank ",
             style: GoogleFonts.poppins(
               fontSize: 35,
               fontWeight: FontWeight.bold,
@@ -60,7 +56,7 @@ class Screen1 extends StatelessWidget {
             height: 20,
           ),
           Text(
-            "Welcome to JackpotArena, the ultimate \n destination for thrilling games and real \n cash rewards. Get ready to play, win, \n and withdraw your earnings effortlessly.",
+            "Withdrawing your winnings is easy and\n secure. Simply play, win, and transfer\n your earnings directly to any bank\n account of your choice.",
             style: GoogleFonts.poppins(
               fontSize: 18,
             ),
@@ -71,12 +67,12 @@ class Screen1 extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const Screen2(),
+                  builder: (context) => AccountCreation(),
                 ),
               );
             },
             child: SvgPicture.asset(
-              "assets/Button1.svg",
+              "assets/Button3.svg",
               height: 50,
             ),
           ),

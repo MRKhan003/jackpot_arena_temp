@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -34,13 +36,32 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: Colors.white,
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              "JACKPOTARENA",
+            Image.asset(
+              "assets/JACKPOTARENA.png",
+              height: 35,
+              width: 257,
+              filterQuality: FilterQuality.high,
+              alignment: Alignment.center,
             ),
             Image.asset(
-              "assets/airplane.png",
+              "assets/airplane 1.png",
+              height: 55,
+              width: 57,
               filterQuality: FilterQuality.high,
+              alignment: Alignment.center,
+            ),
+            Spacer(
+              flex: 1,
+            ),
+            Text(
+              "Powered by Corise",
+              textAlign: TextAlign.end,
+              style: GoogleFonts.poppins(
+                fontSize: 16,
+                color: Colors.grey,
+              ),
             ),
           ],
         ),
