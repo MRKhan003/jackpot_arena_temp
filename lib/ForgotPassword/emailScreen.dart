@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
@@ -10,13 +11,18 @@ class EmailScreen extends StatelessWidget {
   FieldController controller = FieldController();
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
+  bool validate = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 90,
           ),
           Center(
@@ -25,7 +31,7 @@ class EmailScreen extends StatelessWidget {
               height: 20,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Text(
@@ -35,7 +41,7 @@ class EmailScreen extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Padding(
@@ -49,21 +55,33 @@ class EmailScreen extends StatelessWidget {
               textController: controller.emailController,
               keyboardType: TextInputType.emailAddress,
               hideText: false,
+              fieldIcon: Icons.email_outlined,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           RoundedLoadingButton(
             controller: buttonController,
-            color: Color.fromARGB(255, 205, 187, 21),
+            color: const Color.fromARGB(255, 205, 187, 21),
             onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerificationScreen(),
-                ),
-              );
+              if (controller.emailController.text.isNotEmpty) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => VerificationScreen(),
+                  ),
+                );
+              } else {
+                Fluttertoast.showToast(
+                    msg: "Fill all fields",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 5,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              }
             },
             child: Text(
               'CONTINUE',

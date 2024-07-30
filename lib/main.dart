@@ -1,32 +1,36 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jackpot_arena/AccountAuth/accountCreation.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
-import 'package:jackpot_arena/ForgotPassword/newPassword.dart';
-import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
-import 'package:jackpot_arena/Screens/homeScreen.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen2.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen3.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
+import 'package:jackpot_arena/firebase_options.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Jackpot Arena',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.green,
         useMaterial3: true,
       ),
-      home: SplashScreen(),
+      darkTheme: ThemeData.dark(),
+      themeMode: ThemeMode.light,
+      home: const SplashScreen(),
     );
   }
 }

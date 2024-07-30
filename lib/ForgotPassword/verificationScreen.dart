@@ -11,9 +11,13 @@ class VerificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 90,
           ),
           Center(
@@ -22,7 +26,7 @@ class VerificationScreen extends StatelessWidget {
               height: 20,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Text(
@@ -32,7 +36,7 @@ class VerificationScreen extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Center(
@@ -56,7 +60,7 @@ class VerificationScreen extends StatelessWidget {
                   color: Colors.grey,
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Text(
@@ -64,7 +68,7 @@ class VerificationScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  color: Color.fromARGB(255, 204, 187, 31),
+                  color: const Color.fromARGB(255, 204, 187, 31),
                 ),
               ),
             ],

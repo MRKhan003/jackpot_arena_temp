@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "101536392826",
+    "project_id": "jackpot-arena-49e79",
+    "storage_bucket": "jackpot-arena-49e79.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:101536392826:android:8a73e7d5e2bbdf9a6dbdc3",
+        "android_client_info": {
+          "package_name": "com.android.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-uL_H_4bzbqaY4JoY9XkRWi87SJeFBnc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

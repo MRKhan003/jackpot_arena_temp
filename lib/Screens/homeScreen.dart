@@ -8,20 +8,22 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: [
-          Container(
-            child: Row(
-              children: [
-                SvgPicture.asset(
-                  'assets/me 2.svg',
-                  height: 20,
-                ),
-                Icon(
-                  Icons.notifications,
-                ),
-              ],
-            ),
+          Row(
+            children: [
+              SvgPicture.asset(
+                'assets/me 2.svg',
+                height: 20,
+              ),
+              const Icon(
+                Icons.notifications,
+              ),
+            ],
           )
         ],
       ),

@@ -31,6 +31,7 @@ class _InputFieldsState extends State<InputFields> {
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.textController,
+      cursorColor: Colors.black,
       enableSuggestions: true,
       keyboardType: widget.keyboardType,
       autocorrect: true,
@@ -38,11 +39,15 @@ class _InputFieldsState extends State<InputFields> {
               widget.fieldText == 'Confirm Password'
           ? ispasswordNotVisible
           : widget.hideText,
-
-      autofocus: fieldHintText == null ? false : true,
-      readOnly: fieldHintText == null ? false : true,
-      //restorationId: "Name",
       decoration: InputDecoration(
+        fillColor: Colors.black,
+        focusColor: Colors.yellowAccent,
+        hoverColor: Colors.yellow,
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Color(0xffF8B31A),
+          ),
+        ),
         suffixIcon: widget.fieldText == 'Password' ||
                 widget.fieldText == 'Confirm Password'
             ? IconButton(
@@ -56,11 +61,11 @@ class _InputFieldsState extends State<InputFields> {
                   ispasswordNotVisible ? widget.fieldIcon : Icons.visibility,
                 ),
               )
-            : null,
+            : Icon(widget.fieldIcon),
         label: Text(widget.fieldText),
         hintText: fieldHintText,
         prefixText: fieldPrefixText,
-        border: OutlineInputBorder(
+        border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(
               10,

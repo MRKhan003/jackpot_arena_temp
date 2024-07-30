@@ -10,73 +10,89 @@ class Screen3 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 30,
-            ),
-            child: Container(
-              alignment: Alignment.topLeft,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 20,
+              ),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const Screen2(),
                     ),
                   );
                 },
-                child: SvgPicture.asset(
-                  "assets/BackButton.svg",
-                  height: 35,
+                child: Container(
+                  alignment: Alignment.topLeft,
+                  child: SvgPicture.asset(
+                    'assets/BackButton.svg',
+                    height: 30,
+                  ),
                 ),
               ),
             ),
-          ),
-          SizedBox(
-            height: 25,
-          ),
-          SvgPicture.asset(
-            "assets/Car.svg",
-            height: 180,
-          ),
-          SizedBox(
-            height: 40,
-          ),
-          Text(
-            "Easy Withdrawals \n to Your Bank ",
-            style: GoogleFonts.poppins(
-              fontSize: 35,
-              fontWeight: FontWeight.bold,
+            const SizedBox(
+              height: 20,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "Withdrawing your winnings is easy and\n secure. Simply play, win, and transfer\n your earnings directly to any bank\n account of your choice.",
-            style: GoogleFonts.poppins(
-              fontSize: 18,
+            Image.asset(
+              'assets/AirplaneMoney.png',
+              height: 150,
+              filterQuality: FilterQuality.high,
             ),
-            textAlign: TextAlign.center,
-          ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AccountCreation(),
+            const SizedBox(
+              height: 40,
+            ),
+            Text(
+              "Easy Withdrawals \n to Your Bank ",
+              style: GoogleFonts.poppins(
+                fontSize: 35,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 15,
+                right: 15,
+              ),
+              child: Text(
+                "Withdrawing your winnings is easy and\n secure. Simply play, win, and transfer\n your earnings directly to any bank\n account of your choice.",
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
                 ),
-              );
-            },
-            child: SvgPicture.asset(
-              "assets/Button3.svg",
+                textAlign: TextAlign.center,
+              ),
+            ),
+            SizedBox(
               height: 50,
             ),
-          ),
-        ],
+            GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AccountCreation(),
+                  ),
+                );
+              },
+              child: SvgPicture.asset(
+                "assets/Button3.svg",
+                height: 80,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
 import 'package:jackpot_arena/Widgets/inputFieldController.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
-class NewPassword extends StatelessWidget {
+class NewPassword extends StatefulWidget {
+  @override
+  State<NewPassword> createState() => _NewPasswordState();
+}
+
+class _NewPasswordState extends State<NewPassword> {
   FieldController controller = FieldController();
+
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
+
+  bool validate = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 90,
           ),
           Center(
@@ -23,7 +37,7 @@ class NewPassword extends StatelessWidget {
               height: 20,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 50,
           ),
           Text(
@@ -33,7 +47,7 @@ class NewPassword extends StatelessWidget {
               fontWeight: FontWeight.w600,
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           Padding(
@@ -66,8 +80,20 @@ class NewPassword extends StatelessWidget {
           ),
           RoundedLoadingButton(
             controller: buttonController,
-            color: Color.fromARGB(255, 205, 187, 21),
-            onPressed: () {},
+            color: const Color.fromARGB(255, 205, 187, 21),
+            onPressed: () {
+              if (controller.passwordController.text.isEmpty &&
+                  controller.passwordConfirmController.text.isEmpty) {
+                Fluttertoast.showToast(
+                    msg: "Fill all fields",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.CENTER,
+                    timeInSecForIosWeb: 5,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0);
+              } else {}
+            },
             child: Text(
               'CONTINUE',
               style: GoogleFonts.poppins(
