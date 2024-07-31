@@ -3,7 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/AccountAuth/accountCreation.dart';
+import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/ForgotPassword/emailScreen.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
 import 'package:jackpot_arena/Widgets/inputFieldController.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
@@ -17,11 +19,14 @@ class _UserLoginState extends State<UserLogin> {
   FieldController controller = FieldController();
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
-  bool validate = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -90,7 +95,7 @@ class _UserLoginState extends State<UserLogin> {
                   child: Text(
                     'Forgot Password?',
                     style: GoogleFonts.poppins(
-                      color: const Color.fromARGB(255, 206, 206, 46),
+                      color: const Color(0xffF8B31A),
                     ),
                   ),
                 ),
@@ -102,9 +107,9 @@ class _UserLoginState extends State<UserLogin> {
             RoundedLoadingButton(
               controller: buttonController,
               resetAfterDuration: true,
-              resetDuration: Duration(seconds: 5),
+              resetDuration: const Duration(seconds: 5),
               completionDuration: const Duration(seconds: 3),
-              color: const Color.fromARGB(255, 205, 187, 21),
+              color: const Color(0xffF8B31A),
               onPressed: () {
                 if (controller.emailController.text.isEmpty &&
                     controller.passwordController.text.isEmpty) {
@@ -116,7 +121,13 @@ class _UserLoginState extends State<UserLogin> {
                       backgroundColor: Colors.red,
                       textColor: Colors.white,
                       fontSize: 16.0);
-                } else {}
+                } else {
+                  Firebasefunctions().loggingIn(
+                    controller.emailController.text,
+                    controller.passwordController.text,
+                    context,
+                  );
+                }
               },
               child: Text(
                 'SIGN IN',
@@ -127,7 +138,7 @@ class _UserLoginState extends State<UserLogin> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             Padding(
@@ -158,7 +169,7 @@ class _UserLoginState extends State<UserLogin> {
                     child: Text(
                       "Sign up",
                       style: GoogleFonts.poppins(
-                        color: const Color.fromARGB(255, 210, 210, 26),
+                        color: const Color(0xffF8B31A),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),

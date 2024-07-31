@@ -9,5 +9,6 @@ class UserDetails {
     this.email,
     this.password,
     this.cPassword,
+    this.userID,
   });
 }

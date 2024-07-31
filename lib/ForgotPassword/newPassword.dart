@@ -13,18 +13,15 @@ class NewPassword extends StatefulWidget {
 
 class _NewPasswordState extends State<NewPassword> {
   FieldController controller = FieldController();
-
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
-
-  bool validate = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -80,7 +77,7 @@ class _NewPasswordState extends State<NewPassword> {
           ),
           RoundedLoadingButton(
             controller: buttonController,
-            color: const Color.fromARGB(255, 205, 187, 21),
+            color: const Color(0xffF8B31A),
             onPressed: () {
               if (controller.passwordController.text.isEmpty &&
                   controller.passwordConfirmController.text.isEmpty) {

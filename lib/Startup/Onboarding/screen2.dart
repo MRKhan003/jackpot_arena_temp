@@ -14,6 +14,7 @@ class Screen2 extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -30,7 +31,7 @@ class Screen2 extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Screen1(),
+                          builder: (context) => const Screen1(),
                         ),
                       );
                     },
@@ -104,7 +105,7 @@ class Screen2 extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             GestureDetector(
@@ -112,7 +113,7 @@ class Screen2 extends StatelessWidget {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const Screen3(),
+                    builder: (context) => Screen3(),
                   ),
                 );
               },

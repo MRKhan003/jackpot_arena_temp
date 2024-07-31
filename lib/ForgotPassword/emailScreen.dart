@@ -19,6 +19,7 @@ class EmailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: Column(
         children: [
@@ -63,7 +64,7 @@ class EmailScreen extends StatelessWidget {
           ),
           RoundedLoadingButton(
             controller: buttonController,
-            color: const Color.fromARGB(255, 205, 187, 21),
+            color: const Color(0xffF8B31A),
             onPressed: () {
               if (controller.emailController.text.isNotEmpty) {
                 Navigator.pushReplacement(

@@ -31,7 +31,11 @@ class _AccountCreationState extends State<AccountCreation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -127,7 +131,7 @@ class _AccountCreationState extends State<AccountCreation> {
               resetAfterDuration: true,
               completionDuration: const Duration(seconds: 3),
               resetDuration: const Duration(seconds: 5),
-              color: const Color.fromARGB(255, 205, 187, 21),
+              color: const Color(0xffF8B31A),
               onPressed: () {
                 if (controller.nameController.text.isNotEmpty &&
                     controller.emailController.text.isNotEmpty &&
@@ -139,12 +143,8 @@ class _AccountCreationState extends State<AccountCreation> {
                   Firebasefunctions().signUp(
                       controller.emailController.text,
                       controller.passwordController.text,
-                      controller.userNameController.text);
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => UserLogin(),
-                      ));
+                      controller.userNameController.text,
+                      context);
                 } else {
                   Fluttertoast.showToast(
                       msg: "Fill all fields",
@@ -197,7 +197,7 @@ class _AccountCreationState extends State<AccountCreation> {
                     child: Text(
                       "Sign in",
                       style: GoogleFonts.poppins(
-                        color: const Color.fromARGB(255, 210, 210, 26),
+                        color: const Color(0xffF8B31A),
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
