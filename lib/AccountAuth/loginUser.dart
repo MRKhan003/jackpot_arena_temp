@@ -40,7 +40,7 @@ class _UserLoginState extends State<UserLogin> {
               height: 50,
             ),
             Text(
-              "CREATE NEW ACCOUNT",
+              "LOGIN TO ACCOUNT",
               style: GoogleFonts.poppins(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,

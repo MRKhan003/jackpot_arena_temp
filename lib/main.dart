@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
+import 'package:jackpot_arena/Screens/gamesScreen.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
 
