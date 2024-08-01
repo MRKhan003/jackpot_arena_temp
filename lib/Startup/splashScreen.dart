@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:jackpot_arena/RootFunctionality/rootFunc.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,9 +15,9 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
   void initState() {
     super.initState();
+    //getConnectivity();
     _navigateScreen();
   }
 
@@ -23,11 +27,13 @@ class _SplashScreenState extends State<SplashScreen> {
         seconds: 5,
       ),
     );
+
     Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const Screen1(),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => RootFunc(),
+      ),
+    );
   }
 
   @override

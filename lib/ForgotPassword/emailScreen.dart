@@ -64,6 +64,9 @@ class EmailScreen extends StatelessWidget {
           ),
           RoundedLoadingButton(
             controller: buttonController,
+            resetAfterDuration: true,
+            resetDuration: const Duration(seconds: 5),
+            completionDuration: const Duration(seconds: 3),
             color: const Color(0xffF8B31A),
             onPressed: () {
               if (controller.emailController.text.isNotEmpty) {

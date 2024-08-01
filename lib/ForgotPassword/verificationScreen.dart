@@ -120,6 +120,7 @@ class VerificationScreen extends StatelessWidget {
                   height: 68,
                   width: 64,
                   child: TextField(
+                    cursorColor: Colors.grey,
                     style: Theme.of(context).textTheme.headlineMedium,
                     keyboardType: TextInputType.number,
                     autofocus: true,
@@ -150,6 +151,7 @@ class VerificationScreen extends StatelessWidget {
                   height: 68,
                   width: 64,
                   child: TextField(
+                    cursorColor: Colors.grey,
                     style: Theme.of(context).textTheme.headlineMedium,
                     keyboardType: TextInputType.number,
                     autofocus: true,
@@ -180,6 +182,7 @@ class VerificationScreen extends StatelessWidget {
                   height: 68,
                   width: 64,
                   child: TextField(
+                    cursorColor: Colors.grey,
                     style: Theme.of(context).textTheme.headlineMedium,
                     keyboardType: TextInputType.number,
                     autofocus: true,

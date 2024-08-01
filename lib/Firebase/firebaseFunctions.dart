@@ -27,8 +27,8 @@ class Firebasefunctions with ChangeNotifier {
         } else if (userName == userNames[i]) {
           Fluttertoast.showToast(
               msg: "User name already exist",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
               backgroundColor: Colors.yellow,
               textColor: Colors.white,
@@ -49,7 +49,7 @@ class Firebasefunctions with ChangeNotifier {
   Future<bool> signUp(
       String email, String pass, String userName, BuildContext context) async {
     UserDetails userDetails = UserDetails();
-    if (getUserNames(userName) == true) {
+    if (getUserNames(userName) != false) {
       try {
         // getUserNames(userName);
         UserCredential credential = await auth.createUserWithEmailAndPassword(
@@ -62,8 +62,8 @@ class Firebasefunctions with ChangeNotifier {
         }
         Fluttertoast.showToast(
             msg: "Account Created Successfully",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.green,
             textColor: Colors.white,
@@ -76,8 +76,8 @@ class Firebasefunctions with ChangeNotifier {
         if (e.code == 'weak-password') {
           Fluttertoast.showToast(
               msg: e.code,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
               backgroundColor: Colors.yellow,
               textColor: Colors.white,
@@ -86,8 +86,8 @@ class Firebasefunctions with ChangeNotifier {
         } else if (e.code == 'email-already-in-use') {
           Fluttertoast.showToast(
               msg: e.code,
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.CENTER,
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
               backgroundColor: Colors.yellow,
               textColor: Colors.white,
@@ -98,8 +98,8 @@ class Firebasefunctions with ChangeNotifier {
       } catch (e) {
         Fluttertoast.showToast(
             msg: e.toString(),
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.red,
             textColor: Colors.white,
@@ -122,8 +122,8 @@ class Firebasefunctions with ChangeNotifier {
       if (loginCredential.user != null) {
         Fluttertoast.showToast(
             msg: "Login Successfull",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.green,
             textColor: Colors.white,
@@ -137,8 +137,8 @@ class Firebasefunctions with ChangeNotifier {
       if (e.code == 'invalid-credential') {
         Fluttertoast.showToast(
             msg: 'Invalid email or password',
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.red,
             textColor: Colors.white,
@@ -148,8 +148,8 @@ class Firebasefunctions with ChangeNotifier {
       } else if (e.code == 'wrong-password') {
         Fluttertoast.showToast(
             msg: e.code,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.red,
             textColor: Colors.white,
@@ -159,8 +159,8 @@ class Firebasefunctions with ChangeNotifier {
       } else {
         Fluttertoast.showToast(
             msg: e.toString(),
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
             backgroundColor: Colors.red,
             textColor: Colors.white,
@@ -171,8 +171,8 @@ class Firebasefunctions with ChangeNotifier {
     } catch (e) {
       Fluttertoast.showToast(
           msg: e.toString(),
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 5,
           backgroundColor: Colors.red,
           textColor: Colors.white,
@@ -180,6 +180,35 @@ class Firebasefunctions with ChangeNotifier {
       print('$e');
       return false;
     }
+  }
+
+  Future<UserDetails> checkLoginInfo() async {
+    UserDetails myUser = UserDetails();
+    myUser.isLoadingStartupData = true;
+    try {
+      currentUser = myUser;
+      auth.authStateChanges().listen((event) async {
+        if (event?.uid == null) {
+          myUser.userID = null;
+          myUser.isLoadingStartupData = false;
+          setCurrentUser(myUser);
+        } else {
+          myUser.userID = event?.uid;
+          myUser = await UserDatabase().getUserbyID(auth.currentUser!.uid);
+          myUser.isLoadingStartupData = false;
+          setCurrentUser(myUser);
+        }
+      });
+      return myUser;
+    } catch (e) {
+      print(e);
+      return null!;
+    }
+  }
+
+  void setCurrentUser(UserDetails user) {
+    currentUser = user;
+    notifyListeners();
   }
 }
 

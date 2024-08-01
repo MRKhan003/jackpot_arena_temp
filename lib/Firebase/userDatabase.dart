@@ -34,4 +34,14 @@ class UserDatabase {
       return false;
     }
   }
+
+  Future<UserDetails> getUserbyID(String uid) async {
+    UserDetails setUser = UserDetails();
+    DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+        await ffObject.collection("Users").doc(currentUser.userID).get();
+    setUser.userID = documentSnapshot.data()!["UserID"];
+    setUser.userName = documentSnapshot.data()!["UserName"];
+    setUser.email = documentSnapshot.data()!["UserEmail"];
+    return setUser;
+  }
 }

@@ -1,10 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
-import 'package:jackpot_arena/Screens/gamesScreen.dart';
+import 'package:get/get.dart';
+import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
+import 'package:jackpot_arena/NetworkCheck/dependencyInjection.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
+import 'package:jackpot_arena/Startup/splash.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,6 +15,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+  Dependencyinjection.init();
 }
 
 class MyApp extends StatefulWidget {
@@ -25,16 +29,23 @@ class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Jackpot Arena',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        useMaterial3: true,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Firebasefunctions(),
+        ),
+      ],
+      child: GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Jackpot Arena',
+        theme: ThemeData(
+          primarySwatch: Colors.green,
+          useMaterial3: true,
+        ),
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.light,
+        home: SplashScreen(),
       ),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.light,
-      home: SplashScreen(),
     );
   }
 }

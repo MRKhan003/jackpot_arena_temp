@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class UserDetails {
   String? name, userName, email, password, cPassword, userID;
   Timestamp? creationTime;
+  bool? isLoadingStartupData;
   UserDetails({
     this.name,
     this.userName,
@@ -10,5 +11,6 @@ class UserDetails {
     this.password,
     this.cPassword,
     this.userID,
+    this.isLoadingStartupData,
   });
 }

@@ -149,7 +149,7 @@ class _AccountCreationState extends State<AccountCreation> {
                   Fluttertoast.showToast(
                       msg: "Fill all fields",
                       toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.CENTER,
+                      gravity: ToastGravity.BOTTOM,
                       timeInSecForIosWeb: 5,
                       backgroundColor: Colors.red,
                       textColor: Colors.white,
