@@ -44,6 +44,7 @@ class _Screen1State extends State<Screen1> {
       context: context,
       builder: (context) {
         return AlertDialog(
+          shape: RoundedRectangleBorder(),
           title: Text(
             'Internet Connection Lost',
           ),

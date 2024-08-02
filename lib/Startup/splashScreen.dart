@@ -1,10 +1,15 @@
 import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/RootFunctionality/rootFunc.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -15,23 +20,45 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final Connectivity _connectivity = Connectivity();
+  moveToIntro() {
+    if (FirebaseAuth.instance.currentUser != null) {
+      Timer(Duration(seconds: 4), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Screen1(),
+          ),
+        );
+      });
+    } else {
+      Timer(Duration(seconds: 4), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
+      });
+    }
+  }
+
   void initState() {
     super.initState();
     //getConnectivity();
-    _navigateScreen();
+    moveToIntro();
   }
 
-  _navigateScreen() async {
-    await Future.delayed(
-      const Duration(
-        seconds: 5,
-      ),
-    );
-
+  _navigateScreen() {
+    // await Future.delayed(
+    //   // const Duration(
+    //   //   seconds: 5,
+    //   // ),
+    // );
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => RootFunc(),
+        builder: (context) => moveToIntro(),
       ),
     );
   }

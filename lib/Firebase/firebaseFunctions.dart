@@ -206,6 +206,74 @@ class Firebasefunctions with ChangeNotifier {
     }
   }
 
+  Future<bool> sendPassword(String email, BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Successfull!'),
+            content: Text('Link sent to your email.'),
+          );
+        },
+      );
+      return true;
+    } on FirebaseException catch (e) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Error!'),
+            content: Text(e.message.toString()),
+          );
+        },
+      );
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> verifyResetCode(String code, String newPassword) async {
+    try {
+      String email = await FirebaseAuth.instance.verifyPasswordResetCode(code);
+      print('Password reset code is valid for email: $email');
+      // Prompt the user to enter a new password and complete the reset process
+      await resetPassword(code, newPassword);
+    } catch (e) {
+      print('Failed to verify password reset code: $e');
+    }
+  }
+
+  Future<void> resetPassword(String code, String newPassword) async {
+    try {
+      await FirebaseAuth.instance.confirmPasswordReset(
+        code: code,
+        newPassword: newPassword,
+      );
+      print('Password has been reset successfully');
+    } catch (e) {
+      print('Failed to reset password: $e');
+    }
+  }
+
+  Future<bool> logout(BuildContext context) async {
+    try {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => UserLogin(),
+        ),
+      );
+      return true;
+    } catch (e) {
+      print("$e");
+      return false;
+    }
+  }
+
   void setCurrentUser(UserDetails user) {
     currentUser = user;
     notifyListeners();

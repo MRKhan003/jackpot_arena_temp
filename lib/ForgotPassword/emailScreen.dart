@@ -1,7 +1,10 @@
+import 'package:email_auth/email_auth.dart';
+import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
 import 'package:jackpot_arena/Widgets/inputFieldController.dart';
@@ -12,6 +15,8 @@ class EmailScreen extends StatelessWidget {
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
   bool validate = false;
+  final TextEditingController codeController = TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +73,7 @@ class EmailScreen extends StatelessWidget {
             resetDuration: const Duration(seconds: 5),
             completionDuration: const Duration(seconds: 3),
             color: const Color(0xffF8B31A),
-            onPressed: () {
+            onPressed: () async {
               if (controller.emailController.text.isNotEmpty) {
                 Navigator.pushReplacement(
                   context,

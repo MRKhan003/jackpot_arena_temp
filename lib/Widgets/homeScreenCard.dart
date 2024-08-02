@@ -13,8 +13,10 @@ class HomeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      clipBehavior: Clip.antiAlias,
-      elevation: 5.0,
+      color: Colors.white,
+      surfaceTintColor: Colors.white,
+      elevation: 0,
+      clipBehavior: Clip.none,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
           Radius.circular(
@@ -33,7 +35,7 @@ class HomeCard extends StatelessWidget {
             width: 100,
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Padding(
             padding: const EdgeInsets.only(left: 5, right: 5),
@@ -41,7 +43,7 @@ class HomeCard extends StatelessWidget {
               textAlign: TextAlign.center,
               cardText,
               style: GoogleFonts.poppins(
-                fontSize: 16,
+                fontSize: 10,
               ),
             ),
           ),

@@ -1,7 +1,10 @@
+import 'package:email_otp/email_otp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
+import 'package:jackpot_arena/ForgotPassword/emailScreen.dart';
 import 'package:jackpot_arena/NetworkCheck/dependencyInjection.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/splash.dart';
