@@ -27,7 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => Screen1(),
+            builder: (context) => HomeScreen(),
           ),
         );
       });
@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => Screen1(),
           ),
         );
       });

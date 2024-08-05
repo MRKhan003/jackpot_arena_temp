@@ -44,13 +44,25 @@ class _Screen1State extends State<Screen1> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(),
-          title: Text(
-            'Internet Connection Lost',
+          insetPadding: EdgeInsets.all(0),
+          alignment: Alignment.bottomCenter,
+          backgroundColor: Colors.red,
+          shape: BeveledRectangleBorder(),
+          iconPadding: EdgeInsets.all(0),
+          icon: Icon(
+            Icons.wifi_off,
+            color: Colors.white,
           ),
+          contentPadding: EdgeInsets.only(left: 5),
           content: Text(
-            'Please Check your Internet Connection',
+            'Internet Connection Lost',
+            textAlign: TextAlign.center,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+            ),
           ),
+          buttonPadding: EdgeInsets.all(0),
+          actionsPadding: EdgeInsets.all(0),
           actions: [
             TextButton(
               onPressed: () async {
@@ -67,7 +79,12 @@ class _Screen1State extends State<Screen1> {
                   });
                 }
               },
-              child: Text('Ok'),
+              child: Text(
+                'Continue',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         );

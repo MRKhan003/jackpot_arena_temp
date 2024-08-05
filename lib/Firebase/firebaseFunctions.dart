@@ -70,12 +70,11 @@ class Firebasefunctions with ChangeNotifier {
             fontSize: 16.0);
         UserDatabase().sendUserData(userDetails);
         navigateToNextScreenAfterSignUp(context);
-
         return true;
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
           Fluttertoast.showToast(
-              msg: e.code,
+              msg: 'Use a strong password',
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
@@ -85,7 +84,17 @@ class Firebasefunctions with ChangeNotifier {
           return false;
         } else if (e.code == 'email-already-in-use') {
           Fluttertoast.showToast(
-              msg: e.code,
+              msg: 'Email already in use',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 5,
+              backgroundColor: Colors.yellow,
+              textColor: Colors.white,
+              fontSize: 16.0);
+          return false;
+        } else if (e.code == 'network-request-failed') {
+          Fluttertoast.showToast(
+              msg: 'Internet Connection Failed',
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
@@ -113,7 +122,7 @@ class Firebasefunctions with ChangeNotifier {
 
   Future<bool> loggingIn(
       String email, String pass, BuildContext context) async {
-    FirebaseAuth loginAuth = FirebaseAuth.instance;
+    //FirebaseAuth loginAuth = FirebaseAuth.instance;
     try {
       print('Testing...');
       UserCredential loginCredential = await FirebaseAuth.instance
@@ -148,6 +157,28 @@ class Firebasefunctions with ChangeNotifier {
       } else if (e.code == 'wrong-password') {
         Fluttertoast.showToast(
             msg: e.code,
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        print('$e');
+        return false;
+      } else if (e.code == 'invalid-email') {
+        Fluttertoast.showToast(
+            msg: 'The email address is badly formatted',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        print('$e');
+        return false;
+      } else if (e.code == 'network-request-failed') {
+        Fluttertoast.showToast(
+            msg: 'Internet Connection Failed',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,

@@ -1,13 +1,6 @@
-import 'package:email_otp/email_otp.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
-import 'package:jackpot_arena/ForgotPassword/emailScreen.dart';
-import 'package:jackpot_arena/NetworkCheck/dependencyInjection.dart';
-import 'package:jackpot_arena/Screens/homeScreen.dart';
-import 'package:jackpot_arena/Startup/splash.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
 import 'package:provider/provider.dart';
@@ -18,7 +11,7 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-  Dependencyinjection.init();
+  // Dependencyinjection.init();
 }
 
 class MyApp extends StatefulWidget {
@@ -38,7 +31,7 @@ class _MyAppState extends State<MyApp> {
           create: (_) => Firebasefunctions(),
         ),
       ],
-      child: GetMaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Jackpot Arena',
         theme: ThemeData(

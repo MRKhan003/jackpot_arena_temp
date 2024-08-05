@@ -44,6 +44,11 @@ class _InputFieldsState extends State<InputFields> {
         focusColor: Colors.yellowAccent,
         hoverColor: Colors.yellow,
         focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(
+              10,
+            ),
+          ),
           borderSide: BorderSide(
             color: Color(0xffF8B31A),
           ),
@@ -63,7 +68,7 @@ class _InputFieldsState extends State<InputFields> {
               )
             : Icon(widget.fieldIcon),
         label: Text(widget.fieldText),
-        hintText: fieldHintText,
+        //hintText: fieldHintText,
         prefixText: fieldPrefixText,
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(

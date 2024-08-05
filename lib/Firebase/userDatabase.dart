@@ -13,14 +13,6 @@ class UserDatabase {
         'UserName': details.userName,
         'UserEmail': details.email,
       });
-      Fluttertoast.showToast(
-          msg: "Data Stored",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
       return true;
     } catch (e) {
       Fluttertoast.showToast(

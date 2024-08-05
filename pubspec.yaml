@@ -52,14 +52,16 @@ dependencies:
   get: ^4.6.6
   internet_connection_checker:
   email_auth:
+  double_back_to_close_app:
+  google_mobile_ads:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter_launcher_icons:
-  android: 'launcher_icon'
+  android: 'assets/Main-Logo.png'
   ios: true
-  image_path: "assets/Logo2.png"
+  image_path: "assets/Main-Logo.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
