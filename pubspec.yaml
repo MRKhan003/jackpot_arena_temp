@@ -54,6 +54,7 @@ dependencies:
   email_auth:
   double_back_to_close_app:
   google_mobile_ads:
+  intl:
 
 dev_dependencies:
   flutter_test:

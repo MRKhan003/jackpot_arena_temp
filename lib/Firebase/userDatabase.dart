@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,10 +10,19 @@ class UserDatabase {
   final FirebaseFirestore ffObject = FirebaseFirestore.instance;
   Future<bool> sendUserData(UserDetails details) async {
     try {
-      await ffObject.collection('Users').doc(details.userID).set({
+      await ffObject.collection('Users').doc(details.userName).set({
         'UserID': details.userID,
         'UserName': details.userName,
         'UserEmail': details.email,
+      });
+      await ffObject
+          .collection('Users')
+          .doc(details.userName)
+          .collection('Earning')
+          .doc()
+          .set({
+        'Game Coins': 0,
+        'Real Money': 0,
       });
       return true;
     } catch (e) {
@@ -23,6 +34,7 @@ class UserDatabase {
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 16.0);
+      print(e);
       return false;
     }
   }

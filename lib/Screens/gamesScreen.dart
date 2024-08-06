@@ -9,6 +9,23 @@ import 'package:jackpot_arena/Widgets/homeScreenCard.dart';
 class GamesScreen extends StatefulWidget {
   @override
   State<GamesScreen> createState() => _GamesScreenState();
+  List<String> ListImages = [
+    'assets/Plane Crash.png',
+    'assets/Dice.png',
+    'assets/Plink.png',
+    'assets/Plane Crash.png',
+    'assets/Dice.png',
+    'assets/Plink.png',
+  ];
+
+  List<String> ListText = [
+    'Plane Crash \n Game',
+    'Dice Money \n Cash',
+    'Plinko',
+    'Plane Crash \n Game',
+    'Dice Money \n Cash',
+    'Plinko',
+  ];
 }
 
 class _GamesScreenState extends State<GamesScreen> {
@@ -31,7 +48,7 @@ class _GamesScreenState extends State<GamesScreen> {
         '--------------helloooooooooooooooooooooooooo _createBannerAd------------');
     _bannerAd = BannerAd(
         size: AdSize.fullBanner,
-        adUnitId: "ca-app-pub-3940256099942544/9214589741",
+        adUnitId: "ca-app-pub-3940256099942544/2247696110",
         listener: bannerAdListener,
         request: AdRequest())
       ..load();
@@ -41,24 +58,6 @@ class _GamesScreenState extends State<GamesScreen> {
     super.initState();
     _createBannerAd();
   }
-
-  List<String> ListImages = [
-    'assets/Plane Crash.png',
-    'assets/Dice.png',
-    'assets/Plink.png',
-    'assets/Plane Crash.png',
-    'assets/Dice.png',
-    'assets/Plink.png',
-  ];
-
-  List<String> ListText = [
-    'Plane Crash \n Game',
-    'Dice Money \n Cash',
-    'Plinko',
-    'Plane Crash \n Game',
-    'Dice Money \n Cash',
-    'Plinko',
-  ];
 
   List<String> CategoryImage = [
     'assets/Arcade.png',
@@ -182,23 +181,25 @@ class _GamesScreenState extends State<GamesScreen> {
                   return Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: HomeCard(
-                      cardImage: ListImages[index],
-                      cardText: ListText[index],
+                      cardImage: widget.ListImages[index],
+                      cardText: widget.ListText[index],
                       index: index,
                     ),
                   );
                 },
-                itemCount: ListText.length,
+                itemCount: widget.ListText.length,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                child: Image.asset(
-                  'assets/Frame.jpg',
-                  filterQuality: FilterQuality.high,
-                  fit: BoxFit.fill,
-                ),
+                child: _bannerAd == null
+                    ? Image.asset(
+                        'assets/Frame.jpg',
+                        filterQuality: FilterQuality.high,
+                        fit: BoxFit.fill,
+                      )
+                    : AdWidget(ad: _bannerAd!),
                 //height: 70,
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -250,8 +251,8 @@ class _GamesScreenState extends State<GamesScreen> {
           ],
         ),
       ),
-      bottomNavigationBar:
-          _bannerAd == null ? Container() : AdWidget(ad: _bannerAd!),
+      // bottomNavigationBar:
+      //     _bannerAd == null ? Container() : AdWidget(ad: _bannerAd!),
     );
   }
 }

@@ -123,6 +123,7 @@ class Firebasefunctions with ChangeNotifier {
   Future<bool> loggingIn(
       String email, String pass, BuildContext context) async {
     //FirebaseAuth loginAuth = FirebaseAuth.instance;
+    UserDetails loginUser = UserDetails();
     try {
       print('Testing...');
       UserCredential loginCredential = await FirebaseAuth.instance
@@ -130,7 +131,8 @@ class Firebasefunctions with ChangeNotifier {
       print('Testing...');
       if (loginCredential.user != null) {
         Fluttertoast.showToast(
-            msg: "Login Successfull",
+            msg: "Welcome back " +
+                await FirebaseAuth.instance.currentUser!.displayName.toString(),
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,

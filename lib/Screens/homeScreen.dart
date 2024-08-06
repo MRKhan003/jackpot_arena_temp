@@ -1,13 +1,17 @@
 import 'dart:async';
-
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
+import 'package:jackpot_arena/Firebase/userDetails.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
+import 'package:jackpot_arena/Screens/notificationScreen.dart';
+import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,9 +21,53 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  UserDetails user = UserDetails();
+  _getData() async {
+    //UserDetails setUser = UserDetails();
+    try {
+      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+          await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(FirebaseAuth.instance.currentUser!.displayName.toString())
+              .collection('Earning')
+              .doc()
+              .get();
+      user.gameCoins = documentSnapshot.data()!['Game Coins'];
+      user.realMoney = documentSnapshot.data()!['Real Money'];
+      print(user.gameCoins);
+      return true;
+      // DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
+      //     await FirebaseFirestore.instance
+      //         .collection("Users")
+      //         .doc('tester1')
+      //         .collection('Earning')
+      //         .doc()
+      //         .get();
+      // gameCoins = documentSnapshot.data()!["Game Coins"];
+      // realMoney = documentSnapshot.data()!["Real Money"];
+      // print(gameCoins);
+      // return true;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+      return false;
+    }
+  }
+
   late StreamSubscription subscription;
   var isDeviceConnected = false;
   bool isAlertSet = false;
+  int gameCoin = 9000;
+  double realMoney = 0.001;
+  int temp = 0;
+  calculateMoney() {
+    if (temp == 0) {
+      realMoney *= gameCoin;
+      temp++;
+      return realMoney.toString();
+    } else {
+      return realMoney.toString();
+    }
+  }
 
   @override
   void initState() {
@@ -28,6 +76,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getConnectivity() {
+    _getData();
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
@@ -112,19 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<Widget> pages = [
     GamesScreen(),
-    Container(
-      color: Colors.green,
-    ),
-    Container(
-      color: Colors.blue,
-    ),
+    Notificationscreen(),
+    Withdrawhistoryscreen(),
     Container(
       color: Colors.purple,
     ),
   ];
   List<IconData> barIcons = [
     Icons.gamepad_outlined,
-    Icons.notifications_active_outlined,
+    Icons.notifications_outlined,
     Icons.file_open_outlined,
     Icons.person_3_outlined,
   ];
@@ -144,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Padding(
             padding: const EdgeInsets.only(left: 5, right: 5),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 10, bottom: 5),
@@ -154,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
-                              Radius.circular(10),
+                              Radius.circular(5),
                             ),
                             color: const Color(0xffEFCC4E),
                           ),
@@ -173,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  '100,000',
+                                  gameCoin.toString(),
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
@@ -195,34 +240,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(10),
+                                Radius.circular(5),
                               ),
                               color: const Color(0xff409023),
                             ),
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(left: 3),
+                                  padding: const EdgeInsets.only(left: 2),
                                   child: Image.asset(
                                     'assets/image 10.png',
                                     height: 25,
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  width: 13,
                                 ),
                                 Text(
-                                  '5000',
+                                  calculateMoney(),
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  width: 13,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(
-                                    right: 5,
+                                    right: 6,
                                     top: 2,
                                     bottom: 2,
                                   ),
@@ -237,6 +282,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ],
                   ),
+                ),
+                SizedBox(
+                  width: 3,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 5, right: 10),
