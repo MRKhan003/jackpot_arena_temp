@@ -14,69 +14,51 @@ import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
+  UserDetails user = UserDetails();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  UserDetails user = UserDetails();
-  _getData() async {
+  late StreamSubscription subscription;
+  var isDeviceConnected = false;
+  bool isAlertSet = false;
+  late double gameCoin, realMoney;
+  double? aggregate = 0.001;
+  int temp = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    getConnectivity();
+  }
+
+  getData() async {
     //UserDetails setUser = UserDetails();
     try {
-      DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-          await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(FirebaseAuth.instance.currentUser!.displayName.toString())
-              .collection('Earning')
-              .doc()
-              .get();
-      user.gameCoins = documentSnapshot.data()!['Game Coins'];
-      user.realMoney = documentSnapshot.data()!['Real Money'];
-      print(user.gameCoins);
+      CollectionReference getDataReference = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection('Earning');
+      QuerySnapshot snapshot = await getDataReference.get();
+      snapshot.docs.forEach((doc) {
+        setState(() {
+          widget.user.gameCoins = doc['Game Coins'];
+          widget.user.realMoney = doc['Real Money'];
+        });
+      });
+
+      print(widget.user.gameCoins);
       return true;
-      // DocumentSnapshot<Map<String, dynamic>> documentSnapshot =
-      //     await FirebaseFirestore.instance
-      //         .collection("Users")
-      //         .doc('tester1')
-      //         .collection('Earning')
-      //         .doc()
-      //         .get();
-      // gameCoins = documentSnapshot.data()!["Game Coins"];
-      // realMoney = documentSnapshot.data()!["Real Money"];
-      // print(gameCoins);
-      // return true;
     } on FirebaseException catch (e) {
       print(e.message.toString());
       return false;
     }
   }
 
-  late StreamSubscription subscription;
-  var isDeviceConnected = false;
-  bool isAlertSet = false;
-  int gameCoin = 9000;
-  double realMoney = 0.001;
-  int temp = 0;
-  calculateMoney() {
-    if (temp == 0) {
-      realMoney *= gameCoin;
-      temp++;
-      return realMoney.toString();
-    } else {
-      return realMoney.toString();
-    }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    getConnectivity();
-  }
-
   getConnectivity() {
-    _getData();
+    //_getData();
     subscription = Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> result) async {
@@ -89,6 +71,16 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
   }
+
+  // calculateMoney() {
+  //   if (temp == 0) {
+  //     realMoney = 0.001 * user.gameCoins!;
+  //     temp++;
+  //     return realMoney.toString();
+  //   } else {
+  //     return realMoney.toString();
+  //   }
+  // }
 
   showDialogBox() {
     showDialog(
@@ -149,12 +141,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void dispose() {
     subscription.cancel();
     super.dispose();
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 
   int _selectedIndex = 0;
@@ -218,7 +204,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               Padding(
                                 padding: const EdgeInsets.only(right: 5),
                                 child: Text(
-                                  gameCoin.toString(),
+                                  widget.user.gameCoins != null
+                                      ? widget.user.gameCoins.toString()
+                                      : 'Loading...',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
@@ -257,7 +245,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   width: 13,
                                 ),
                                 Text(
-                                  calculateMoney(),
+                                  widget.user.realMoney != null
+                                      ? widget.user.realMoney.toString()
+                                      : 'Loading...',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
@@ -294,11 +284,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       foregroundImage: AssetImage(
                         'assets/Plink.png',
                       ),
-                      // child: Image.asset(
-                      //   'assets/Plink.png',
-                      //   filterQuality: FilterQuality.high,
-                      // ),
-                      //radius: 30,
                       maxRadius: 30,
                       minRadius: 20,
                     ),

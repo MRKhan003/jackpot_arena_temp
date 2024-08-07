@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/AccountAuth/accountCreation.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/ForgotPassword/emailScreen.dart';
-import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
 import 'package:jackpot_arena/Widgets/inputFieldController.dart';
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';

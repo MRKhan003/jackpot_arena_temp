@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -52,24 +51,26 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                 minRadius: 15,
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                ),
+                padding: const EdgeInsets.only(left: 5),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      widget.contextText,
-                      textAlign: TextAlign.left,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color: Colors.black,
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        widget.contextText,
+                        textAlign: TextAlign.left,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                     Container(
-                      alignment: Alignment.centerLeft,
+                      alignment: Alignment.bottomLeft,
                       child: Text(
-                        textAlign: TextAlign.left,
+                        textAlign: TextAlign.start,
                         DateFormat('EEEE d, y ').format(now),
                         style: GoogleFonts.poppins(
                           fontSize: 14,

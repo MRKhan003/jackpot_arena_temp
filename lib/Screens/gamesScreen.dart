@@ -1,14 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:jackpot_arena/Widgets/homeScreenCard.dart';
+import 'package:jackpot_arena/Widgets/searchItems.dart';
 
 class GamesScreen extends StatefulWidget {
   @override
   State<GamesScreen> createState() => _GamesScreenState();
+  List<Searchitems> searchList = allItems;
+  bool isActive = true;
+
   List<String> ListImages = [
     'assets/Plane Crash.png',
     'assets/Dice.png',
@@ -77,7 +79,7 @@ class _GamesScreenState extends State<GamesScreen> {
             const SizedBox(
               height: 20,
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.only(left: 15, right: 15),
               child: SearchBar(
                 backgroundColor: WidgetStatePropertyAll(Color(0xffF0F0F0)),
@@ -90,6 +92,7 @@ class _GamesScreenState extends State<GamesScreen> {
                 ),
                 hintText: 'Search',
                 leading: Icon(Icons.search),
+                onChanged: searchBox,
               ),
             ),
             const SizedBox(
@@ -108,6 +111,18 @@ class _GamesScreenState extends State<GamesScreen> {
                 ),
               ],
               options: CarouselOptions(
+                initialPage: 0,
+                onPageChanged: (index, reason) {
+                  if (index == 0) {
+                    setState(() {
+                      widget.isActive = true;
+                    });
+                  } else {
+                    setState(() {
+                      widget.isActive = false;
+                    });
+                  }
+                },
                 autoPlay: true,
                 enlargeCenterPage: true,
                 height: 200,
@@ -135,6 +150,9 @@ class _GamesScreenState extends State<GamesScreen> {
                   icon: Icon(
                     Icons.circle,
                     size: 10,
+                    color: widget.isActive == true
+                        ? Color(0xffECB607)
+                        : Colors.black,
                   ),
                 ),
                 IconButton(
@@ -156,6 +174,9 @@ class _GamesScreenState extends State<GamesScreen> {
                   icon: Icon(
                     Icons.circle,
                     size: 10,
+                    color: widget.isActive == false
+                        ? Color(0xffECB607)
+                        : Colors.black,
                   ),
                 ),
               ],
@@ -178,16 +199,16 @@ class _GamesScreenState extends State<GamesScreen> {
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
+                  final search = widget.searchList[index];
                   return Padding(
                     padding: const EdgeInsets.only(left: 20),
                     child: HomeCard(
-                      cardImage: widget.ListImages[index],
-                      cardText: widget.ListText[index],
-                      index: index,
+                      cardImage: search.imageURL,
+                      cardText: search.context,
                     ),
                   );
                 },
-                itemCount: widget.ListText.length,
+                itemCount: widget.searchList.length,
               ),
             ),
             Padding(
@@ -255,4 +276,28 @@ class _GamesScreenState extends State<GamesScreen> {
       //     _bannerAd == null ? Container() : AdWidget(ad: _bannerAd!),
     );
   }
+
+  void searchBox(String query) {
+    final suggestions = allItems.where((search) {
+      final searchTitle = search.context.toLowerCase();
+      final input = query.toLowerCase();
+      return searchTitle.contains(input);
+    }).toList();
+    setState(() {
+      widget.searchList = suggestions;
+    });
+  }
+
+  // searchListItems() {
+  //   return ListView.builder(
+  //     scrollDirection: Axis.vertical,
+  //     itemCount: widget.ListImages.length,
+  //     itemBuilder: (context, index) {
+  //       return ListTile(
+  //         leading: Image.asset(widget.ListImages[index]),
+  //         title: Text(widget.ListText[index]),
+  //       );
+  //     },
+  //   );
+  // }
 }

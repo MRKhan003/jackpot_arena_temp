@@ -1,9 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
-import 'package:jackpot_arena/Screens/homeScreen.dart';
-import 'package:jackpot_arena/Screens/notificationScreen.dart';
-import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
 import 'package:provider/provider.dart';

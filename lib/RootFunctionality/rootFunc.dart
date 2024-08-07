@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jackpot_arena/AccountAuth/accountCreation.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
-import 'package:jackpot_arena/Firebase/userController.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';

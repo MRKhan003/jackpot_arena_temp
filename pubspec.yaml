@@ -55,14 +55,15 @@ dependencies:
   double_back_to_close_app:
   google_mobile_ads:
   intl:
+  flutter_launcher_icons:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter_launcher_icons:
-  android: 'assets/Main-Logo.png'
+  android: true
   ios: true
-  image_path: "assets/Main-Logo.png"
+  image_path: "assets/Logo2.png"
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

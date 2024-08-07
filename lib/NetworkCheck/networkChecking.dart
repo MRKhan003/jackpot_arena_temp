@@ -2,7 +2,6 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 
 class NetworkChecking extends GetxController {
   final Connectivity _connectivity = Connectivity();

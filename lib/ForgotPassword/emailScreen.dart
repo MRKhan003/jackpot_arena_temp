@@ -1,10 +1,7 @@
-import 'package:email_auth/email_auth.dart';
-import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/ForgotPassword/verificationScreen.dart';
 import 'package:jackpot_arena/Widgets/inputField.dart';
 import 'package:jackpot_arena/Widgets/inputFieldController.dart';

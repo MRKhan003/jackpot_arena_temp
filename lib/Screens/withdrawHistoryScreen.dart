@@ -1,16 +1,47 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jackpot_arena/Firebase/userDetails.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Widgets/notificationWidget.dart';
 
 class Withdrawhistoryscreen extends StatefulWidget {
-  const Withdrawhistoryscreen({super.key});
-
   @override
   State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
+  UserDetails user = UserDetails();
 }
 
 class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  getData() async {
+    //UserDetails setUser = UserDetails();
+    try {
+      CollectionReference getDataReference = FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .collection('Earning');
+      QuerySnapshot snapshot = await getDataReference.get();
+      snapshot.docs.forEach((doc) {
+        setState(() {
+          widget.user.gameCoins = doc['Game Coins'];
+          widget.user.realMoney = doc['Real Money'];
+        });
+      });
+
+      print(widget.user.gameCoins);
+      return true;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +64,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                     children: [
                       Column(
                         mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             'You have balance',
@@ -44,7 +76,9 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                           Container(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Rs. 5,000',
+                              widget.user.realMoney != null
+                                  ? 'Rs. ' + widget.user.realMoney.toString()
+                                  : 'Loading...',
                               style: GoogleFonts.poppins(
                                   fontSize: 18,
                                   color: Color(0xff54B02F),

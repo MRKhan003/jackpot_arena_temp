@@ -3,11 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HomeCard extends StatelessWidget {
   String cardText, cardImage;
-  int index;
   HomeCard({
     required this.cardImage,
     required this.cardText,
-    required this.index,
   });
 
   @override
