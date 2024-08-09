@@ -1,8 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:jackpot_arena/Screens/notificationScreen.dart';
+import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
+import 'package:jackpot_arena/Startup/Onboarding/screen2.dart';
+import 'package:jackpot_arena/Startup/Onboarding/screen3.dart';
 import 'package:jackpot_arena/Widgets/homeScreenCard.dart';
+import 'package:jackpot_arena/Widgets/notificationWidget.dart';
 import 'package:jackpot_arena/Widgets/searchItems.dart';
 
 class GamesScreen extends StatefulWidget {
@@ -28,11 +36,48 @@ class GamesScreen extends StatefulWidget {
     'Dice Money \n Cash',
     'Plinko',
   ];
+  bool isTapped = false;
+  bool inSearch = false;
 }
 
 class _GamesScreenState extends State<GamesScreen> {
-  TextEditingController searchController = TextEditingController();
+  bool _whenTapped() {
+    setState(() {
+      widget.isTapped = true;
+      widget.inSearch = true;
+    });
+    return widget.isTapped;
+  }
 
+  bool _whenTappedOutside() {
+    setState(() {
+      widget.isTapped = false;
+    });
+    return widget.isTapped;
+  }
+
+  bool _inSearchBox() {
+    setState(() {
+      widget.inSearch = true;
+    });
+
+    return widget.inSearch;
+  }
+
+  TextEditingController searchController = TextEditingController();
+  final List<String> items = [
+    'A_Item1',
+    'A_Item2',
+    'A_Item3',
+    'A_Item4',
+    'B_Item1',
+    'B_Item2',
+    'B_Item3',
+    'B_Item4',
+  ];
+
+  String? selectedValue;
+  final TextEditingController textEditingController = TextEditingController();
   CarouselController carouselController = CarouselController();
   BannerAd? _bannerAd;
   static final BannerAdListener bannerAdListener = BannerAdListener(
@@ -45,20 +90,21 @@ class _GamesScreenState extends State<GamesScreen> {
     onAdOpened: (ad) => debugPrint('Ad Opened'),
     onAdClosed: (ad) => debugPrint('Ad Closed'),
   );
+  @override
+  void initState() {
+    super.initState();
+    _createBannerAd();
+  }
+
   void _createBannerAd() {
     print(
         '--------------helloooooooooooooooooooooooooo _createBannerAd------------');
     _bannerAd = BannerAd(
-        size: AdSize.fullBanner,
-        adUnitId: "ca-app-pub-3940256099942544/2247696110",
+        size: AdSize.getInlineAdaptiveBannerAdSize(300, 50),
+        adUnitId: "ca-app-pub-3940256099942544/6300978111",
         listener: bannerAdListener,
         request: AdRequest())
       ..load();
-  }
-
-  void initstate() {
-    super.initState();
-    _createBannerAd();
   }
 
   List<String> CategoryImage = [
@@ -79,136 +125,203 @@ class _GamesScreenState extends State<GamesScreen> {
             const SizedBox(
               height: 20,
             ),
-            Padding(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              child: SearchBar(
-                backgroundColor: WidgetStatePropertyAll(Color(0xffF0F0F0)),
-                elevation: WidgetStatePropertyAll(0),
-                surfaceTintColor: WidgetStatePropertyAll(Colors.white),
-                side:
-                    WidgetStatePropertyAll(BorderSide(style: BorderStyle.none)),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(left: 15, right: 15),
+                  child: SearchBar(
+                    controller: searchController,
+                    backgroundColor: WidgetStatePropertyAll(Color(0xffF0F0F0)),
+                    elevation: WidgetStatePropertyAll(0),
+                    surfaceTintColor: WidgetStatePropertyAll(Colors.white),
+                    side: WidgetStatePropertyAll(
+                        BorderSide(style: BorderStyle.none)),
+                    shape: WidgetStatePropertyAll(
+                      RoundedRectangleBorder(),
+                    ),
+                    hintText: 'Search',
+                    leading: Icon(Icons.search),
+                    onChanged: searchBox,
+                    onTap: _whenTapped,
+                    // onTapOutside: (event) {
+                    //   _whenTappedOutside();
+                    // },
+                  ),
                 ),
-                hintText: 'Search',
-                leading: Icon(Icons.search),
-                onChanged: searchBox,
-              ),
+                widget.isTapped == true
+                    ? Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: SizedBox(
+                          height: 300,
+                          child: ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            itemCount: widget.searchList.length,
+                            itemBuilder: (context, index) {
+                              final search = widget.searchList[index];
+                              return ListTile(
+                                leading: Image.asset(
+                                  search.imageURL,
+                                ),
+                                title: Text(search.context),
+                                onTap: () {
+                                  // if (search.context == 'Plane Crash Game') {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => Screen1(),
+                                  //     ),
+                                  //   );
+                                  // } else if (search.context == 'Plinko') {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => Screen3(),
+                                  //     ),
+                                  //   );
+                                  // } else if (search.context ==
+                                  //     'Dice Money Cash') {
+                                  //   Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(
+                                  //       builder: (context) => Screen2(),
+                                  //     ),
+                                  //   );
+                                  // }
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
+              ],
             ),
             const SizedBox(
               height: 20,
             ),
-            CarouselSlider(
-              carouselController: carouselController,
-              items: [
-                Image.asset(
-                  'assets/Carousel-1.png',
-                  filterQuality: FilterQuality.high,
-                ),
-                Image.asset(
-                  'assets/Carousel-2.png',
-                  filterQuality: FilterQuality.high,
-                ),
-              ],
-              options: CarouselOptions(
-                initialPage: 0,
-                onPageChanged: (index, reason) {
-                  if (index == 0) {
-                    setState(() {
-                      widget.isActive = true;
-                    });
-                  } else {
-                    setState(() {
-                      widget.isActive = false;
-                    });
-                  }
-                },
-                autoPlay: true,
-                enlargeCenterPage: true,
-                height: 200,
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <IconButton>[
-                IconButton(
-                  alignment: Alignment.center,
-                  splashRadius: 1,
-                  style: ButtonStyle(
-                    iconSize: WidgetStatePropertyAll(1),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.all(
-                        0,
-                      ),
-                    ),
+            GestureDetector(
+              onTap: _whenTappedOutside,
+              child: CarouselSlider(
+                carouselController: carouselController,
+                items: [
+                  Image.asset(
+                    'assets/Carousel-1.png',
+                    filterQuality: FilterQuality.high,
                   ),
-                  onPressed: () => carouselController.previousPage(
-                    duration: Duration(
-                      seconds: 1,
-                    ),
+                  Image.asset(
+                    'assets/Carousel-2.png',
+                    filterQuality: FilterQuality.high,
                   ),
-                  icon: Icon(
-                    Icons.circle,
-                    size: 10,
-                    color: widget.isActive == true
-                        ? Color(0xffECB607)
-                        : Colors.black,
-                  ),
-                ),
-                IconButton(
-                  alignment: Alignment.center,
-                  splashRadius: 1,
-                  style: ButtonStyle(
-                    iconSize: WidgetStatePropertyAll(1),
-                    padding: WidgetStatePropertyAll(
-                      EdgeInsets.all(
-                        0,
-                      ),
-                    ),
-                  ),
-                  onPressed: () => carouselController.nextPage(
-                    duration: Duration(
-                      seconds: 1,
-                    ),
-                  ),
-                  icon: Icon(
-                    Icons.circle,
-                    size: 10,
-                    color: widget.isActive == false
-                        ? Color(0xffECB607)
-                        : Colors.black,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 40),
-              child: Container(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Games',
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
+                ],
+                options: CarouselOptions(
+                  initialPage: 0,
+                  onPageChanged: (index, reason) {
+                    if (index == 0) {
+                      setState(() {
+                        widget.isActive = true;
+                      });
+                    } else {
+                      setState(() {
+                        widget.isActive = false;
+                      });
+                    }
+                  },
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  height: 200,
                 ),
               ),
             ),
-            SizedBox(
-              height: 130,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  final search = widget.searchList[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: HomeCard(
-                      cardImage: search.imageURL,
-                      cardText: search.context,
+            GestureDetector(
+              onTap: _whenTappedOutside,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <IconButton>[
+                  IconButton(
+                    alignment: Alignment.center,
+                    splashRadius: 1,
+                    style: ButtonStyle(
+                      iconSize: WidgetStatePropertyAll(1),
+                      padding: WidgetStatePropertyAll(
+                        EdgeInsets.all(
+                          0,
+                        ),
+                      ),
                     ),
-                  );
-                },
-                itemCount: widget.searchList.length,
+                    onPressed: () => carouselController.previousPage(
+                      duration: Duration(
+                        seconds: 1,
+                      ),
+                    ),
+                    icon: Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: widget.isActive == true
+                          ? Color(0xffECB607)
+                          : Colors.black,
+                    ),
+                  ),
+                  IconButton(
+                    alignment: Alignment.center,
+                    splashRadius: 1,
+                    style: ButtonStyle(
+                      iconSize: WidgetStatePropertyAll(1),
+                      padding: WidgetStatePropertyAll(
+                        EdgeInsets.all(
+                          0,
+                        ),
+                      ),
+                    ),
+                    onPressed: () => carouselController.nextPage(
+                      duration: Duration(
+                        seconds: 1,
+                      ),
+                    ),
+                    icon: Icon(
+                      Icons.circle,
+                      size: 10,
+                      color: widget.isActive == false
+                          ? Color(0xffECB607)
+                          : Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: _whenTappedOutside,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 40),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Games',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: _whenTappedOutside,
+              child: SizedBox(
+                height: 130,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    //final search = widget.searchList[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: HomeCard(
+                        cardImage: widget.ListImages[index],
+                        cardText: widget.ListText[index],
+                      ),
+                    );
+                  },
+                  itemCount: widget.ListImages.length,
+                ),
               ),
             ),
             Padding(
@@ -221,8 +334,8 @@ class _GamesScreenState extends State<GamesScreen> {
                         fit: BoxFit.fill,
                       )
                     : AdWidget(ad: _bannerAd!),
-                //height: 70,
-                width: double.infinity,
+                height: 50,
+                //width: 300,
                 decoration: BoxDecoration(
                   border: Border.all(
                     color: Colors.black,
@@ -278,6 +391,7 @@ class _GamesScreenState extends State<GamesScreen> {
   }
 
   void searchBox(String query) {
+    _inSearchBox();
     final suggestions = allItems.where((search) {
       final searchTitle = search.context.toLowerCase();
       final input = query.toLowerCase();

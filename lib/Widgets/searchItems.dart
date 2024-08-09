@@ -6,7 +6,7 @@ class Searchitems {
   });
 }
 
-const allItems = [
+var allItems = [
   Searchitems(
     context: 'Plane Crash\n Game',
     imageURL: 'assets/Plane Crash.png',

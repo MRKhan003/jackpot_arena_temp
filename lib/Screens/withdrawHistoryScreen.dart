@@ -10,6 +10,15 @@ class Withdrawhistoryscreen extends StatefulWidget {
   @override
   State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
   UserDetails user = UserDetails();
+  bool isTapped = false;
+  List<String> message = [];
+  List<String> image = [];
+  List<DateTime> timeStamps = [];
+  List<String> status = [];
+  List<String> amount = [];
+  List<String> success = [];
+  int size = 100;
+  String? currentUser;
 }
 
 class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
@@ -17,6 +26,8 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   void initState() {
     super.initState();
     getData();
+    getTransactionData();
+    setData();
   }
 
   getData() async {
@@ -38,6 +49,50 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
       return true;
     } on FirebaseException catch (e) {
       print(e.message.toString());
+      return false;
+    }
+  }
+
+  Future<void> setData() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Transactions').get();
+      print('Loading...');
+      snapshot.docs.forEach((doc) {
+        if (doc['UserID'] == widget.currentUser) {
+          doc.reference.update({'Status': 'Seen'});
+        }
+      });
+    } catch (e) {}
+  }
+
+  getTransactionData() async {
+    try {
+      CollectionReference reference =
+          FirebaseFirestore.instance.collection('Transactions');
+      QuerySnapshot snapshot = await reference.get();
+      print('calling');
+      snapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+          if (widget.size != widget.message.length) {
+            setState(() {
+              widget.message.add(doc['Bank']);
+              widget.status.add(doc['Status']);
+              widget.amount.add(doc['Amount']);
+              //widget.success.add(doc['Successful']);
+              print('added');
+            });
+          }
+        }
+      });
+      setState(() {
+        widget.currentUser = FirebaseAuth.instance.currentUser!.email;
+        widget.size = widget.message.length;
+      });
+      return true;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+      print('null');
       return false;
     }
   }
@@ -145,7 +200,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
               height: 1500,
               child: ListView.builder(
                 scrollDirection: Axis.vertical,
-                itemCount: GamesScreen().ListImages.length,
+                itemCount: widget.message.length,
                 itemBuilder: (context, index) {
                   return Padding(
                     padding: const EdgeInsets.only(
@@ -153,12 +208,18 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                       right: 10,
                       top: 10,
                     ),
-                    child: NotificationWidget(
-                      secondaryColor: Color(0xffF1FFEC),
-                      amount: 100,
-                      status: 'Failed',
-                      imageURL: 'assets/jazz.png',
-                      contextText: 'JazzCash - Mobilink',
+                    child: GestureDetector(
+                      onTap: () => setState(() {
+                        widget.isTapped = true;
+                      }),
+                      child: NotificationWidget(
+                        secondaryColor: Color(0xffF1FFEC),
+                        amount: widget.amount[index],
+                        imageURL: 'assets/jazz.png',
+                        contextText: widget.message[index],
+                        isOpened: widget.isTapped,
+                        //isSuccessfull: widget.success[index],
+                      ),
                     ),
                   );
                 },

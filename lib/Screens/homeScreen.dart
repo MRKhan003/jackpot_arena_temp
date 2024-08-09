@@ -17,6 +17,9 @@ class HomeScreen extends StatefulWidget {
   @override
   State<HomeScreen> createState() => _HomeScreenState();
   UserDetails user = UserDetails();
+  int notificationCount = 100;
+  int transactionCount = 100;
+  int temp = 0;
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -25,17 +28,72 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isAlertSet = false;
   late double gameCoin, realMoney;
   double? aggregate = 0.001;
-  int temp = 0;
 
   @override
   void initState() {
     super.initState();
     getData();
+    getNotificationCount();
+    getTransactionCount();
     getConnectivity();
   }
 
+  getNotificationCount() async {
+    int count = 0;
+    try {
+      CollectionReference reference =
+          FirebaseFirestore.instance.collection('Notifications');
+      QuerySnapshot snapshot = await reference.get();
+      print('calling');
+      snapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
+            doc['Status'] == 'unseen') {
+          if (count != widget.notificationCount) {
+            count++;
+            print('getting...');
+          }
+        }
+      });
+      setState(() {
+        widget.notificationCount = count;
+      });
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    print(widget.notificationCount);
+    print(count);
+  }
+
+  getTransactionCount() async {
+    int tcount = 0;
+    try {
+      CollectionReference reference =
+          FirebaseFirestore.instance.collection('Transactions');
+      QuerySnapshot snapshot = await reference.get();
+      print('calling');
+      snapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
+            doc['Status'] == 'unseen') {
+          if (tcount != widget.transactionCount) {
+            tcount++;
+            print('getting...');
+          }
+        }
+      });
+      setState(() {
+        widget.transactionCount = tcount;
+      });
+      return true;
+    } catch (e) {
+      print(e);
+    }
+    print(widget.transactionCount);
+    print(tcount);
+  }
+
   getData() async {
-    //UserDetails setUser = UserDetails();
+    //getNotificationCount();
     try {
       CollectionReference getDataReference = FirebaseFirestore.instance
           .collection('Users')
@@ -71,16 +129,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
   }
-
-  // calculateMoney() {
-  //   if (temp == 0) {
-  //     realMoney = 0.001 * user.gameCoins!;
-  //     temp++;
-  //     return realMoney.toString();
-  //   } else {
-  //     return realMoney.toString();
-  //   }
-  // }
 
   showDialogBox() {
     showDialog(
@@ -206,7 +254,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Text(
                                   widget.user.gameCoins != null
                                       ? widget.user.gameCoins.toString()
-                                      : 'Loading...',
+                                      : '0',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
@@ -247,7 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 Text(
                                   widget.user.realMoney != null
                                       ? widget.user.realMoney.toString()
-                                      : 'Loading...',
+                                      : '0',
                                   style: GoogleFonts.poppins(
                                     color: Colors.white,
                                   ),
@@ -302,10 +350,60 @@ class _HomeScreenState extends State<HomeScreen> {
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
         itemCount: barIcons.length,
         tabBuilder: (index, isActive) {
-          return Icon(
-            barIcons[index],
-            size: 28,
-            color: isActive ? Color(0xffFF6007) : Colors.grey,
+          return Stack(
+            textDirection: TextDirection.rtl,
+            alignment: Alignment.center,
+            fit: StackFit.loose,
+            children: [
+              Icon(
+                barIcons[index],
+                size: 28,
+                color: isActive ? Color(0xffFF6007) : Colors.grey,
+              ),
+              index == 1 || index == 2
+                  ? Padding(
+                      padding:
+                          const EdgeInsets.only(left: 30, bottom: 25, right: 5),
+                      child: widget.notificationCount != 0 &&
+                              widget.notificationCount != 100
+                          ? Container(
+                              child: Text(
+                              widget.notificationCount.toString(),
+                              textAlign: TextAlign.center,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ))
+                          : Container(
+                              child: index == 2
+                                  ? Container(
+                                      child: widget.transactionCount != 0 &&
+                                              widget.transactionCount != 100
+                                          ? Container(
+                                              height: 15,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: Colors.red,
+                                              ),
+                                              alignment: Alignment.topCenter,
+                                              child: Text(
+                                                widget.transactionCount
+                                                    .toString(),
+                                                textAlign: TextAlign.center,
+                                                style: GoogleFonts.poppins(
+                                                  color: Colors.white,
+                                                  fontSize: 10,
+                                                ),
+                                              ),
+                                            )
+                                          : SizedBox(),
+                                    )
+                                  : SizedBox(),
+                            ),
+                    )
+                  : SizedBox(),
+            ],
           );
         },
         splashRadius: 30,
@@ -318,6 +416,9 @@ class _HomeScreenState extends State<HomeScreen> {
         activeIndex: _selectedIndex,
         onTap: (index) => setState(() {
           _selectedIndex = index;
+          if (index == 2) {
+            widget.transactionCount = 0;
+          }
         }),
       ),
     );
