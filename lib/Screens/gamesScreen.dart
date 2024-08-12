@@ -1,16 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:jackpot_arena/Screens/notificationScreen.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen2.dart';
-import 'package:jackpot_arena/Startup/Onboarding/screen3.dart';
 import 'package:jackpot_arena/Widgets/homeScreenCard.dart';
-import 'package:jackpot_arena/Widgets/notificationWidget.dart';
 import 'package:jackpot_arena/Widgets/searchItems.dart';
 
 class GamesScreen extends StatefulWidget {
@@ -100,7 +92,7 @@ class _GamesScreenState extends State<GamesScreen> {
     print(
         '--------------helloooooooooooooooooooooooooo _createBannerAd------------');
     _bannerAd = BannerAd(
-        size: AdSize.getInlineAdaptiveBannerAdSize(300, 50),
+        size: AdSize.getInlineAdaptiveBannerAdSize(350, 80),
         adUnitId: "ca-app-pub-3940256099942544/6300978111",
         listener: bannerAdListener,
         request: AdRequest())

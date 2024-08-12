@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jackpot_arena/Provider/counterProvider.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Widgets/notificationWidget.dart';
+import 'package:provider/provider.dart';
 
 class Notificationscreen extends StatefulWidget {
   @override
@@ -14,14 +18,41 @@ class Notificationscreen extends StatefulWidget {
   List<String> status = [];
   int size = 100;
   String? currentUser;
-  bool isTapped = false;
+  static bool isTapped = false;
+  int notificationCount = 100;
 }
 
 class _NotificationscreenState extends State<Notificationscreen> {
   @override
   void initState() {
-    _getData();
     super.initState();
+    _getData();
+  }
+
+  void getNotificationCount() async {
+    int count = 0;
+    try {
+      CollectionReference reference =
+          FirebaseFirestore.instance.collection('Notifications');
+      QuerySnapshot snapshot = await reference.get();
+      print('calling');
+      snapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
+            doc['Status'] == 'unseen') {
+          if (count != widget.notificationCount) {
+            count++;
+            print('getting...');
+          }
+        }
+      });
+      setState(() {
+        widget.notificationCount = count;
+      });
+    } catch (e) {
+      print(e);
+    }
+    print(widget.notificationCount);
+    print(count);
   }
 
   Future<void> setData(String docName) async {
@@ -36,6 +67,8 @@ class _NotificationscreenState extends State<Notificationscreen> {
           print('Error');
         }
       });
+      _updateNotifications();
+      //getNotificationCount();
     } catch (e) {}
   }
 
@@ -61,6 +94,41 @@ class _NotificationscreenState extends State<Notificationscreen> {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.message.length;
       });
+      return true;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+      print('null');
+      return false;
+    }
+  }
+
+  _updateNotifications() async {
+    widget.message = [];
+    widget.status = [];
+
+    try {
+      CollectionReference reference =
+          FirebaseFirestore.instance.collection('Notifications');
+      QuerySnapshot snapshot = await reference.get();
+      print('calling');
+      snapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+          if (widget.size != widget.message.length) {
+            setState(() {
+              widget.message.add(doc['Title']);
+              widget.image.add(doc['Image Path']);
+              widget.status.add(doc['Status']);
+
+              print('added');
+            });
+          }
+        }
+      });
+      setState(() {
+        widget.currentUser = FirebaseAuth.instance.currentUser!.email;
+        widget.size = widget.message.length;
+      });
+
       return true;
     } on FirebaseException catch (e) {
       print(e.message.toString());
@@ -105,28 +173,28 @@ class _NotificationscreenState extends State<Notificationscreen> {
                       top: 10,
                     ),
                     child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          widget.isTapped == true;
-                        });
-                        setData(
-                          widget.message[index],
-                        );
-                        print('tapped...');
-                      },
-                      child: NotificationWidget(
-                        secondaryColor: Colors.white,
-                        contextIcon: widget.isTapped == false &&
-                                widget.status[index] == 'unseen'
-                            ? Icons.email_outlined
-                            : Icons.mark_email_read_outlined,
-                        //contextIcon2: Icons.mark_email_read_outlined,
-                        imageURL: GamesScreen().ListImages[index],
-                        contextText: widget.message[index],
-                        status: widget.status[index],
-                        isOpened: widget.isTapped,
-                      ),
-                    ),
+                        onTap: () {
+                          setState(() {
+                            Notificationscreen.isTapped == true;
+                          });
+                          setData(
+                            widget.message[index],
+                          );
+                          final counter = context.read<Counterprovider>();
+                          counter.getNotificationCount();
+                          print('tapped...');
+                        },
+                        child: NotificationWidget(
+                          secondaryColor: Colors.white,
+                          //contextIcon2: Icons.mark_email_read_outlined,
+                          imageURL: GamesScreen().ListImages[index],
+                          contextText: widget.message[index],
+                          status: widget.status[index],
+                          isOpened: Notificationscreen.isTapped,
+                          contextIcon: widget.status[index] == 'unseen'
+                              ? Icons.email_outlined
+                              : Icons.mark_email_read_outlined,
+                        )),
                   );
                 },
               ),

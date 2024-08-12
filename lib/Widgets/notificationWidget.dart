@@ -9,7 +9,7 @@ class NotificationWidget extends StatefulWidget {
   Color? secondaryColor;
   String? amount;
   bool isOpened;
-  String? isSuccessfull;
+  Object? isSuccessfull;
   NotificationWidget({
     this.contextIcon,
     this.isSuccessfull,
@@ -32,9 +32,8 @@ class _NotificationWidgetState extends State<NotificationWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: widget.status == 'unseen' && widget.isOpened == false
-          ? Color(0xffFFF0E8)
-          : widget.secondaryColor,
+      color:
+          widget.status == 'unseen' ? Color(0xffFFF0E8) : widget.secondaryColor,
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.all(8.0),

@@ -9,9 +9,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
+import 'package:jackpot_arena/Provider/counterProvider.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -57,7 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         widget.notificationCount = count;
       });
-      return true;
     } catch (e) {
       print(e);
     }
@@ -343,10 +344,21 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: DoubleBackToCloseApp(
-          snackBar: SnackBar(
-            content: Text('Back again to leave app.'),
-          ),
-          child: pages[_selectedIndex]),
+        snackBar: SnackBar(
+          content: Text('Back again to leave app.'),
+        ),
+        child: StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('Notifications')
+                .doc()
+                .snapshots(),
+            builder: (context, snapshot) {
+              widget.notificationCount != 0 && widget.notificationCount != 100
+                  ? getNotificationCount()
+                  : null;
+              return pages[_selectedIndex];
+            }),
+      ),
       bottomNavigationBar: AnimatedBottomNavigationBar.builder(
         itemCount: barIcons.length,
         tabBuilder: (index, isActive) {
@@ -364,43 +376,56 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? Padding(
                       padding:
                           const EdgeInsets.only(left: 30, bottom: 25, right: 5),
-                      child: widget.notificationCount != 0 &&
-                              widget.notificationCount != 100
-                          ? Container(
-                              child: Text(
-                              widget.notificationCount.toString(),
-                              textAlign: TextAlign.center,
-                              style: GoogleFonts.poppins(
-                                color: Colors.white,
-                                fontSize: 10,
-                              ),
-                            ))
-                          : Container(
-                              child: index == 2
-                                  ? Container(
-                                      child: widget.transactionCount != 0 &&
-                                              widget.transactionCount != 100
-                                          ? Container(
-                                              height: 15,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.red,
-                                              ),
-                                              alignment: Alignment.topCenter,
-                                              child: Text(
-                                                widget.transactionCount
-                                                    .toString(),
-                                                textAlign: TextAlign.center,
-                                                style: GoogleFonts.poppins(
-                                                  color: Colors.white,
-                                                  fontSize: 10,
+                      child: Container(
+                        child: index == 1
+                            ? Container(
+                                child: widget.notificationCount != 0 &&
+                                        widget.notificationCount != 100
+                                    ? Container(
+                                        height: 15,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.red,
+                                        ),
+                                        alignment: Alignment.topCenter,
+                                        child: Text(
+                                          widget.notificationCount.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: GoogleFonts.poppins(
+                                            color: Colors.white,
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      )
+                                    : SizedBox(),
+                              )
+                            : Container(
+                                child: index == 2
+                                    ? Container(
+                                        child: widget.transactionCount != 0 &&
+                                                widget.transactionCount != 100
+                                            ? Container(
+                                                height: 15,
+                                                decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: Colors.red,
                                                 ),
-                                              ),
-                                            )
-                                          : SizedBox(),
-                                    )
-                                  : SizedBox(),
-                            ),
+                                                alignment: Alignment.topCenter,
+                                                child: Text(
+                                                  widget.transactionCount
+                                                      .toString(),
+                                                  textAlign: TextAlign.center,
+                                                  style: GoogleFonts.poppins(
+                                                    color: Colors.white,
+                                                    fontSize: 10,
+                                                  ),
+                                                ),
+                                              )
+                                            : SizedBox(),
+                                      )
+                                    : SizedBox(),
+                              ),
+                      ),
                     )
                   : SizedBox(),
             ],
@@ -417,7 +442,10 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: (index) => setState(() {
           _selectedIndex = index;
           if (index == 2) {
+            //getNotificationCount();
             widget.transactionCount = 0;
+          } else if (index == 0) {
+            //getNotificationCount();
           }
         }),
       ),
