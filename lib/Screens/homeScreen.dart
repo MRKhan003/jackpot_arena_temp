@@ -9,13 +9,12 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
-import 'package:jackpot_arena/Provider/counterProvider.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
+  HomeScreen({super.key});
   @override
   State<HomeScreen> createState() => _HomeScreenState();
   UserDetails user = UserDetails();
@@ -353,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 .doc()
                 .snapshots(),
             builder: (context, snapshot) {
-              widget.notificationCount != 0 && widget.notificationCount != 100
+              widget.temp == 1 && widget.notificationCount != 100
                   ? getNotificationCount()
                   : null;
               return pages[_selectedIndex];
@@ -439,15 +438,20 @@ class _HomeScreenState extends State<HomeScreen> {
         leftCornerRadius: 32,
         rightCornerRadius: 32,
         activeIndex: _selectedIndex,
-        onTap: (index) => setState(() {
-          _selectedIndex = index;
-          if (index == 2) {
-            //getNotificationCount();
-            widget.transactionCount = 0;
-          } else if (index == 0) {
-            //getNotificationCount();
-          }
-        }),
+        onTap: (index) => setState(
+          () {
+            _selectedIndex = index;
+            if (index == 2) {
+              //getNotificationCount();
+              widget.transactionCount = 0;
+            } else if (index == 1) {
+              //getNotificationCount();
+              widget.temp = 1;
+            } else if (index == 0) {
+              widget.temp = 0;
+            }
+          },
+        ),
       ),
     );
   }

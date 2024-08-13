@@ -69,6 +69,12 @@ class _SplashScreenState extends State<SplashScreen> {
               height: 50,
               filterQuality: FilterQuality.high,
             ),
+            SizedBox(
+              height: 100,
+            ),
+            CircularProgressIndicator(
+              color: Color(0xffFF6007),
+            ),
             const Spacer(
               flex: 1,
             ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -10,12 +11,14 @@ class NotificationWidget extends StatefulWidget {
   String? amount;
   bool isOpened;
   Object? isSuccessfull;
+  Timestamp? time;
   NotificationWidget({
     this.contextIcon,
     this.isSuccessfull,
     required this.isOpened,
     required this.imageURL,
     required this.contextText,
+    this.time,
     this.contextIcon2,
     this.amount,
     this.status,
@@ -67,7 +70,9 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                     alignment: Alignment.bottomLeft,
                     child: Text(
                       textAlign: TextAlign.start,
-                      DateFormat('EEEE d, y ').format(now),
+                      DateFormat('EEEE d, y ').format(
+                        widget.time != null ? widget.time!.toDate() : now,
+                      ),
                       style: GoogleFonts.poppins(
                         fontSize: 14,
                         color: Color(0xffb959595),
@@ -86,8 +91,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                         widget.amount.toString(),
                         style: GoogleFonts.poppins(
                           fontSize: 14,
-                          color: widget.status == 'Completed' ||
-                                  widget.isOpened != false
+                          color: widget.status == 'Completed'
                               ? Color(0xff54B02F)
                               : Colors.red,
                         ),
@@ -98,9 +102,9 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                           fontSize: 10,
                           color: Colors.black,
                         ),
-                      )
+                      ),
                     ],
-                  )
+                  ),
           ],
         ),
       ),

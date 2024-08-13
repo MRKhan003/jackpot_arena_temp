@@ -1,9 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jackpot_arena/Provider/counterProvider.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
+import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
-import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -11,23 +11,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => Counterprovider(),
-      child: const MyApp(),
-    ),
+    MyApp(),
   );
-  // Dependencyinjection.init();
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
-
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
-  // This widget is the root of your application.
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

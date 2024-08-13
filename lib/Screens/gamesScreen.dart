@@ -6,6 +6,7 @@ import 'package:jackpot_arena/Widgets/homeScreenCard.dart';
 import 'package:jackpot_arena/Widgets/searchItems.dart';
 
 class GamesScreen extends StatefulWidget {
+  GamesScreen({super.key});
   @override
   State<GamesScreen> createState() => _GamesScreenState();
   List<Searchitems> searchList = allItems;
@@ -92,7 +93,7 @@ class _GamesScreenState extends State<GamesScreen> {
     print(
         '--------------helloooooooooooooooooooooooooo _createBannerAd------------');
     _bannerAd = BannerAd(
-        size: AdSize.getInlineAdaptiveBannerAdSize(350, 80),
+        size: AdSize.getInlineAdaptiveBannerAdSize(400, 80),
         adUnitId: "ca-app-pub-3940256099942544/6300978111",
         listener: bannerAdListener,
         request: AdRequest())
@@ -320,11 +321,7 @@ class _GamesScreenState extends State<GamesScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 child: _bannerAd == null
-                    ? Image.asset(
-                        'assets/Frame.jpg',
-                        filterQuality: FilterQuality.high,
-                        fit: BoxFit.fill,
-                      )
+                    ? CircularProgressIndicator()
                     : AdWidget(ad: _bannerAd!),
                 height: 50,
                 //width: 300,

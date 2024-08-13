@@ -58,6 +58,7 @@ dependencies:
   flutter_launcher_icons:
   badges:
   dropdown_button2:
+  cached_network_image:
 
 dev_dependencies:
   flutter_test:

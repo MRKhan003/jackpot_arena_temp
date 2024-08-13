@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
 import 'package:jackpot_arena/Widgets/notificationWidget.dart';
+import 'package:jackpot_arena/Widgets/transactionWidget.dart';
 
 class Withdrawhistoryscreen extends StatefulWidget {
+  Withdrawhistoryscreen({super.key});
   @override
   State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
   UserDetails user = UserDetails();
   bool isTapped = false;
-  List<String> message = [];
-  List<String> image = [];
-  List<DateTime> timeStamps = [];
-  List<String> status = [];
+  List<String> withdrawMessage = [];
+  List<String> tStatus = [];
+  List<Timestamp> withdrawTimeStamps = [];
+  List<String> withdrawStatus = [];
   List<String> amount = [];
-  List<String> success = [];
+
   int size = 100;
   String? currentUser;
 }
@@ -25,7 +27,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   void initState() {
     super.initState();
     getData();
-    getTransactionData();
+    _getTransactionData();
     setData();
   }
 
@@ -65,7 +67,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
     } catch (e) {}
   }
 
-  getTransactionData() async {
+  _getTransactionData() async {
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Transactions');
@@ -73,20 +75,27 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
-          if (widget.size != widget.message.length) {
+          if (widget.size != widget.withdrawMessage.length) {
             setState(() {
-              widget.message.add(doc['Bank']);
-              widget.status.add(doc['Status']);
               widget.amount.add(doc['Amount']);
-              //widget.success.add(doc['Successful']);
-              print('added');
+              widget.withdrawMessage.add(doc['Bank']);
+              widget.withdrawStatus.add(doc['Status']);
+              widget.tStatus.add(doc['TStatus']);
+              widget.withdrawTimeStamps.add(doc['Time']);
+
+              print('completed');
             });
+            print(widget.amount);
+            print(widget.withdrawStatus);
+            print(widget.withdrawMessage);
+            print(widget.withdrawTimeStamps);
+            //print(widget.success);
           }
         }
       });
       setState(() {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
-        widget.size = widget.message.length;
+        widget.size = widget.withdrawMessage.length;
       });
       return true;
     } on FirebaseException catch (e) {
@@ -195,35 +204,39 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                 ),
               ),
             ),
-            SizedBox(
-              height: 1500,
-              child: ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: widget.message.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                      left: 10,
-                      right: 10,
-                      top: 10,
+            widget.amount.isEmpty
+                ? CircularProgressIndicator(
+                    color: Color(0xffFF6007),
+                  )
+                : SizedBox(
+                    height: 1500,
+                    child: ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      itemCount: widget.withdrawMessage.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.only(
+                            left: 10,
+                            right: 10,
+                            top: 10,
+                          ),
+                          child: GestureDetector(
+                            onTap: () => setState(() {
+                              widget.isTapped = true;
+                            }),
+                            child: Transactionwidget(
+                              bankName: widget.withdrawMessage[index],
+                              bankIcon: 'assets/jazz.png',
+                              status: widget.withdrawStatus[index],
+                              successful: widget.tStatus[index],
+                              amount: widget.amount[index],
+                              time: widget.withdrawTimeStamps[index],
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                    child: GestureDetector(
-                      onTap: () => setState(() {
-                        widget.isTapped = true;
-                      }),
-                      child: NotificationWidget(
-                        secondaryColor: Color(0xffF1FFEC),
-                        amount: widget.amount[index],
-                        imageURL: 'assets/jazz.png',
-                        contextText: widget.message[index],
-                        isOpened: widget.isTapped,
-                        //isSuccessfull: widget.success[index],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                  ),
           ],
         ),
       ),
