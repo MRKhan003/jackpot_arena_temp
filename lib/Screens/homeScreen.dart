@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
+import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
@@ -197,9 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
     GamesScreen(),
     Notificationscreen(),
     Withdrawhistoryscreen(),
-    Container(
-      color: Colors.purple,
-    ),
+    Profilescreen(),
   ];
   List<IconData> barIcons = [
     Icons.gamepad_outlined,

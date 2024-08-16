@@ -19,7 +19,11 @@ class Transactionwidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: successful == 'Failed' ? Color(0xffFFF0E8) : Color(0xffF1FFEC),
+      color: successful == 'Failed' || successful == 'failed'
+          ? Color(0xffFFF0E8)
+          : successful == 'Inprogress' || successful == 'In-Progress'
+              ? Colors.yellow
+              : Color(0xffF1FFEC),
       width: double.infinity,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -74,7 +78,10 @@ class Transactionwidget extends StatelessWidget {
                     fontSize: 14,
                     color: successful == 'Completed'
                         ? Color(0xff54B02F)
-                        : Colors.red,
+                        : successful == 'In-Progress' ||
+                                successful == 'Inprogress'
+                            ? Colors.white
+                            : Colors.red,
                   ),
                 ),
                 Text(

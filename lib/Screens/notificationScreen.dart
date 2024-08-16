@@ -50,7 +50,12 @@ class _NotificationscreenState extends State<Notificationscreen> {
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Notifications');
-      QuerySnapshot snapshot = await reference.get();
+      QuerySnapshot snapshot = await reference
+          .orderBy(
+            'Time',
+            descending: true,
+          )
+          .get();
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
@@ -135,8 +140,13 @@ class _NotificationscreenState extends State<Notificationscreen> {
               ),
             ),
             widget.message.isEmpty
-                ? CircularProgressIndicator(
-                    color: Color(0xffFF6007),
+                ? Text(
+                    'No Notifications!',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   )
                 : SizedBox(
                     height: 1500,
@@ -158,8 +168,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                               setData(
                                 widget.message[index],
                               );
-                              final counter = context.read<Counterprovider>();
-                              counter.getNotificationCount();
+
                               print('tapped...');
                             },
                             child: NotificationWidget(

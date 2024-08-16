@@ -54,9 +54,9 @@ class EmailScreen extends StatelessWidget {
               bottom: 10,
             ),
             child: InputFields(
-              fieldText: "Email",
-              textController: controller.emailController,
-              keyboardType: TextInputType.emailAddress,
+              fieldText: "Password",
+              textController: controller.passwordController,
+              keyboardType: TextInputType.name,
               hideText: false,
               fieldIcon: Icons.email_outlined,
             ),

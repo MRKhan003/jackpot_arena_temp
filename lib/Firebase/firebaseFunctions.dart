@@ -6,6 +6,7 @@ import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/Firebase/userDatabase.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
+import 'package:jackpot_arena/Startup/splashScreen.dart';
 
 class Firebasefunctions with ChangeNotifier {
   UserDetails currentUser = UserDetails();
@@ -140,7 +141,7 @@ class Firebasefunctions with ChangeNotifier {
                 }),
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 5,
+            timeInSecForIosWeb: 3,
             backgroundColor: Colors.green,
             textColor: Colors.white,
             fontSize: 16.0);
@@ -244,58 +245,6 @@ class Firebasefunctions with ChangeNotifier {
     }
   }
 
-  Future<bool> sendPassword(String email, BuildContext context) async {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(email: email);
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Successfull!'),
-            content: Text('Link sent to your email.'),
-          );
-        },
-      );
-      return true;
-    } on FirebaseException catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Error!'),
-            content: Text(e.message.toString()),
-          );
-        },
-      );
-      return false;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  Future<void> verifyResetCode(String code, String newPassword) async {
-    try {
-      String email = await FirebaseAuth.instance.verifyPasswordResetCode(code);
-      print('Password reset code is valid for email: $email');
-      // Prompt the user to enter a new password and complete the reset process
-      await resetPassword(code, newPassword);
-    } catch (e) {
-      print('Failed to verify password reset code: $e');
-    }
-  }
-
-  Future<void> resetPassword(String code, String newPassword) async {
-    try {
-      await FirebaseAuth.instance.confirmPasswordReset(
-        code: code,
-        newPassword: newPassword,
-      );
-      print('Password has been reset successfully');
-    } catch (e) {
-      print('Failed to reset password: $e');
-    }
-  }
-
   Future<bool> logout(BuildContext context) async {
     try {
       FirebaseAuth.instance.signOut();
@@ -310,6 +259,65 @@ class Firebasefunctions with ChangeNotifier {
       print("$e");
       return false;
     }
+  }
+
+  Future<bool> deleteUser(
+    BuildContext context,
+  ) async {
+    try {
+      await FirebaseAuth.instance.currentUser!.delete();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SplashScreen(),
+        ),
+      );
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void reauthenticateUser(
+      String email, String currentPassword, String newPassword) async {
+    if (FirebaseAuth.instance.currentUser != null) {
+      print(FirebaseAuth.instance.currentUser!.email);
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: email,
+        password: currentPassword,
+      );
+
+      try {
+        await FirebaseAuth.instance.currentUser!
+            .reauthenticateWithCredential(credential);
+
+        print('User reauthenticated successfully.');
+        FirebaseAuth.instance.currentUser!.updatePassword(newPassword);
+        Fluttertoast.showToast(
+          msg: 'Password Updated Successfuly',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+      } on FirebaseException catch (e) {
+        Fluttertoast.showToast(
+          msg: e.message.toString(),
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 3,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
+        );
+        print(e.message);
+      }
+    } else {
+      print('User is not signed in.');
+    }
+    print(FirebaseAuth.instance.currentUser!.email);
   }
 
   void setCurrentUser(UserDetails user) {

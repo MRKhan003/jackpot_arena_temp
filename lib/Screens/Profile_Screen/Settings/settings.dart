@@ -1,0 +1,212 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:jackpot_arena/AccountAuth/loginUser.dart';
+import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
+import 'package:jackpot_arena/Firebase/userController.dart';
+import 'package:jackpot_arena/Widgets/profileScreenWidget.dart';
+
+class SettingsSection extends StatefulWidget {
+  String? confirmEmail;
+  UserController emailController = UserController();
+  SettingsSection({super.key});
+
+  @override
+  State<SettingsSection> createState() => _SettingsSectionState();
+}
+
+class _SettingsSectionState extends State<SettingsSection> {
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  getCurrentUser() async {
+    try {
+      widget.confirmEmail = await FirebaseAuth.instance.currentUser!.email;
+      print(widget.confirmEmail);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: GestureDetector(
+              onTap: () => showDialogBoxforPassword(),
+              child: Profilescreenwidget(
+                widgetContext: 'Change Password',
+                widgetIcon: Icons.password,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: GestureDetector(
+              onTap: () {
+                showDialogBox();
+              },
+              child: Profilescreenwidget(
+                widgetContext: 'Delete Account',
+                widgetIcon: Icons.remove,
+                widgetColor: Colors.red,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  showDialogBox() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.red,
+        title: Text(
+          'Confirm account delete!',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+          ),
+        ),
+        content: Text(
+          'Enter your email to delete account',
+          style: GoogleFonts.poppins(
+            color: Colors.white,
+          ),
+        ),
+        contentPadding: EdgeInsets.fromLTRB(
+          30,
+          5,
+          5,
+          0,
+        ),
+        actions: [
+          TextField(
+            controller: widget.emailController.emailController,
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                print(widget.emailController.emailController.text);
+                widget.emailController.emailController.text ==
+                        widget.confirmEmail
+                    ? Firebasefunctions().deleteUser(context)
+                    : Fluttertoast.showToast(
+                        msg: 'Invalid Email',
+                        toastLength: Toast.LENGTH_LONG,
+                        gravity: ToastGravity.BOTTOM,
+                        timeInSecForIosWeb: 3,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
+              },
+              child: Text('Confirm'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  showDialogBoxforPassword() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey,
+        title: Text(
+          'Password Update',
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+          ),
+        ),
+        content: Text(
+          'Fill the fields below',
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+          ),
+        ),
+        contentPadding: EdgeInsets.fromLTRB(
+          30,
+          5,
+          5,
+          0,
+        ),
+        actions: [
+          TextField(
+            controller: widget.emailController.emailController,
+            decoration: InputDecoration(
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelText: 'Email',
+            ),
+          ),
+          TextField(
+            controller: widget.emailController.passwordController,
+            decoration: InputDecoration(
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelText: 'Current Password',
+            ),
+          ),
+          TextField(
+            controller: widget.emailController.cPasswordController,
+            decoration: InputDecoration(
+              floatingLabelBehavior: FloatingLabelBehavior.always,
+              labelText: 'New Password',
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                if (widget.emailController.emailController != null &&
+                    widget.emailController.passwordController != null &&
+                    widget.emailController.cPasswordController != null) {
+                  Firebasefunctions().reauthenticateUser(
+                    widget.emailController.emailController.text,
+                    widget.emailController.passwordController.text,
+                    widget.emailController.cPasswordController.text,
+                  );
+                } else {
+                  Fluttertoast.showToast(
+                    msg: 'Recheck your information and try again!',
+                    toastLength: Toast.LENGTH_LONG,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 3,
+                    backgroundColor: Colors.red,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                }
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserLogin(),
+                  ),
+                );
+              },
+              child: Text('Confirm'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

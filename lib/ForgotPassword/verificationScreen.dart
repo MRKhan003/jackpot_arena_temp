@@ -132,8 +132,6 @@ class VerificationScreen extends StatelessWidget {
               ),
               controller: buttonController,
               onPressed: () {
-                Firebasefunctions().verifyResetCode(
-                    codeController.text, newPasswordController.text);
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(

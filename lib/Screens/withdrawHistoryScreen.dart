@@ -71,7 +71,8 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Transactions');
-      QuerySnapshot snapshot = await reference.get();
+      QuerySnapshot snapshot =
+          await reference.orderBy('Time', descending: true).get();
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
@@ -205,8 +206,15 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
               ),
             ),
             widget.amount.isEmpty
-                ? CircularProgressIndicator(
-                    color: Color(0xffFF6007),
+                ? Center(
+                    child: Text(
+                      'No Transaction Record!',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   )
                 : SizedBox(
                     height: 1500,
