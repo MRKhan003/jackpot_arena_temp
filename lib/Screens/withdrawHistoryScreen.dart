@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +8,6 @@ import 'package:jackpot_arena/Firebase/userDetails.dart';
 import 'package:jackpot_arena/Widgets/transactionWidget.dart';
 
 class Withdrawhistoryscreen extends StatefulWidget {
-  Withdrawhistoryscreen({super.key});
-  @override
-  State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
   UserDetails user = UserDetails();
   bool isTapped = false;
   List<String> withdrawMessage = [];
@@ -16,18 +15,22 @@ class Withdrawhistoryscreen extends StatefulWidget {
   List<Timestamp> withdrawTimeStamps = [];
   List<String> withdrawStatus = [];
   List<String> amount = [];
-
+  List<String> bankIcon = [];
+  bool ref = true;
   int size = 100;
   String? currentUser;
+  Withdrawhistoryscreen({super.key});
+  @override
+  State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
 }
 
 class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   @override
   void initState() {
-    super.initState();
     getData();
     _getTransactionData();
     setData();
+    super.initState();
   }
 
   getData() async {
@@ -82,13 +85,14 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
               widget.withdrawStatus.add(doc['Status']);
               widget.tStatus.add(doc['TStatus']);
               widget.withdrawTimeStamps.add(doc['Time']);
-
+              widget.bankIcon.add(doc['Bank Icon']);
               print('completed');
             });
             print(widget.amount);
             print(widget.withdrawStatus);
             print(widget.withdrawMessage);
             print(widget.withdrawTimeStamps);
+            print(widget.bankIcon);
             //print(widget.success);
           }
         }
@@ -96,6 +100,9 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
       setState(() {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.withdrawMessage.length;
+        widget.withdrawMessage.isNotEmpty
+            ? widget.ref = true
+            : widget.ref = false;
       });
       return true;
     } on FirebaseException catch (e) {
@@ -204,7 +211,8 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                 ),
               ),
             ),
-            widget.amount.isEmpty
+            //CircularProgressIndicator().,
+            widget.ref == false
                 ? Center(
                     child: Text(
                       'No Transaction Record!',
@@ -233,7 +241,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                             }),
                             child: Transactionwidget(
                               bankName: widget.withdrawMessage[index],
-                              bankIcon: 'assets/jazz.png',
+                              bankIcon: widget.bankIcon[index],
                               status: widget.withdrawStatus[index],
                               successful: widget.tStatus[index],
                               amount: widget.amount[index],

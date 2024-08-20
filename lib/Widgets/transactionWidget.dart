@@ -22,7 +22,7 @@ class Transactionwidget extends StatelessWidget {
       color: successful == 'Failed' || successful == 'failed'
           ? Color(0xffFFF0E8)
           : successful == 'Inprogress' || successful == 'In-Progress'
-              ? Colors.yellow
+              ? Color(0xffFFFFE0)
               : Color(0xffF1FFEC),
       width: double.infinity,
       child: Padding(
@@ -30,11 +30,11 @@ class Transactionwidget extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
-              foregroundImage: AssetImage(
-                'assets/jazz.png',
+              foregroundImage: NetworkImage(
+                bankIcon,
               ),
-              maxRadius: 20,
-              minRadius: 15,
+              maxRadius: 30,
+              minRadius: 25,
             ),
             Padding(
               padding: const EdgeInsets.only(left: 5),
@@ -71,24 +71,46 @@ class Transactionwidget extends StatelessWidget {
             ),
             Spacer(),
             Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  amount,
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    color: successful == 'Completed'
-                        ? Color(0xff54B02F)
-                        : successful == 'In-Progress' ||
-                                successful == 'Inprogress'
-                            ? Colors.white
-                            : Colors.red,
-                  ),
+                Row(
+                  children: [
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        'Rs. ',
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      alignment: Alignment.topLeft,
+                      child: Text(
+                        amount,
+                        style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          color: successful == 'Completed'
+                              ? Color(0xff54B02F)
+                              : successful == 'In-Progress' ||
+                                      successful == 'Inprogress'
+                                  ? Colors.black
+                                  : Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                Text(
-                  successful,
-                  style: GoogleFonts.poppins(
-                    fontSize: 10,
-                    color: Colors.black,
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: Text(
+                    successful,
+                    style: GoogleFonts.poppins(
+                      fontSize: 10,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ],

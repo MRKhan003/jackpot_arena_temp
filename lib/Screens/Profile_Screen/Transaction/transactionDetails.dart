@@ -7,11 +7,13 @@ import 'package:jackpot_arena/Firebase/userDetails.dart';
 
 class Transactiondetails extends StatefulWidget {
   String bankName;
+  String bankIcon;
   UserDetails userDetails = UserDetails();
   Transactioncontroller transactioncontroller = Transactioncontroller();
-  double? userAmount;
+  int userAmount = 0;
   Transactiondetails({
     required this.bankName,
+    required this.bankIcon,
   });
 
   @override
@@ -24,6 +26,30 @@ class _TransactiondetailsState extends State<Transactiondetails> {
     super.initState();
     getCurrentUser();
     getData();
+  }
+
+  updateData() async {
+    //UserDetails setUser = UserDetails();
+    try {
+      print(widget.userDetails.realMoney);
+      print(widget.userAmount);
+      FirebaseFirestore.instance
+          .collection('Users')
+          .doc(widget.userDetails.email)
+          .collection('Earning')
+          .doc()
+          .update({
+        'Real Money': widget.userDetails.realMoney! - widget.userAmount,
+      });
+
+      print(
+        widget.transactioncontroller.amountController.text,
+      );
+      return true;
+    } on FirebaseException catch (e) {
+      print(e.message.toString());
+      return false;
+    }
   }
 
   getData() async {
@@ -57,7 +83,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
   }
 
   setTransactionData(String bankName, String accountNumber, String amount,
-      String displayName) async {
+      String displayName, String bankIcon) async {
     try {
       await FirebaseFirestore.instance
           .collection('Transactions')
@@ -73,6 +99,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         'Time': Timestamp.now(),
         'UserID': widget.userDetails.email,
         'Display Name': displayName,
+        'Bank Icon': bankIcon,
       });
       Fluttertoast.showToast(
         msg: 'Request Sent',
@@ -83,6 +110,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         textColor: Colors.white,
         fontSize: 16.0,
       );
+      updateData();
     } on FirebaseException catch (e) {
       print(e.message);
     }
@@ -139,6 +167,9 @@ class _TransactiondetailsState extends State<Transactiondetails> {
               padding: const EdgeInsets.all(12.0),
               child: TextFormField(
                 controller: widget.transactioncontroller.amountController,
+                onChanged: (value) => setState(() {
+                  widget.userAmount = int.parse(value);
+                }),
                 keyboardType: TextInputType.number,
                 readOnly: false,
                 decoration: InputDecoration(
@@ -169,6 +200,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       widget.transactioncontroller.accountNumberController.text,
                       widget.transactioncontroller.amountController.text,
                       widget.transactioncontroller.nameController.text,
+                      widget.bankIcon,
                     );
                   } else {
                     Fluttertoast.showToast(

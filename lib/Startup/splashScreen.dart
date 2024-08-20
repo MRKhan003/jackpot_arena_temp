@@ -1,13 +1,16 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  String profileImage = '';
+  SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -17,16 +20,27 @@ class _SplashScreenState extends State<SplashScreen> {
   moveToIntro() {
     if (FirebaseAuth.instance.currentUser != null) {
       print(FirebaseAuth.instance.currentUser!.email);
-      Timer(Duration(seconds: 4), () {
+      FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .get()
+          .then((DocumentSnapshot doc) {
+        setState(() {
+          widget.profileImage = doc['ProfileImage'];
+        });
+      });
+      Timer(Duration(seconds: 3), () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => HomeScreen(
+              profileImage: widget.profileImage,
+            ),
           ),
         );
       });
     } else {
-      Timer(Duration(seconds: 4), () {
+      Timer(Duration(seconds: 3), () {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

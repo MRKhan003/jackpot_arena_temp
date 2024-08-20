@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,7 +17,8 @@ class Profilescreen extends StatefulWidget {
   RoundedLoadingButtonController buttonController =
       RoundedLoadingButtonController();
   String? confirmEmail;
-  String? profileImage;
+  String profileImage = '';
+  bool ref = true;
   Profilescreen({super.key});
 
   @override
@@ -25,19 +28,23 @@ class Profilescreen extends StatefulWidget {
 class _ProfilescreenState extends State<Profilescreen> {
   @override
   void initState() {
-    super.initState();
-    getCurrentUser();
     getProfileImage();
+    super.initState();
   }
 
-  Future getProfileImage() async {
+  getProfileImage() async {
     try {
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('Users').get();
       snapshot.docs.forEach((doc) {
         if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
-          widget.profileImage = doc['ProfileImage'];
+          setState(() {
+            widget.profileImage = doc['ProfileImage'];
+          });
         }
+      });
+      setState(() {
+        widget.profileImage != '' ? widget.ref = true : widget.ref = false;
       });
     } on FirebaseException catch (e) {
       Fluttertoast.showToast(
@@ -52,14 +59,14 @@ class _ProfilescreenState extends State<Profilescreen> {
     }
   }
 
-  getCurrentUser() async {
-    try {
-      widget.confirmEmail = await FirebaseAuth.instance.currentUser!.email;
-      print(widget.confirmEmail);
-    } catch (e) {
-      print(e);
-    }
-  }
+  // getCurrentUser() async {
+  //   try {
+  //     widget.confirmEmail = await FirebaseAuth.instance.currentUser!.email;
+  //     print(widget.confirmEmail);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -77,12 +84,13 @@ class _ProfilescreenState extends State<Profilescreen> {
                 CircleAvatar(
                   maxRadius: 70,
                   minRadius: 50,
-                  foregroundImage: widget.profileImage != null
+                  backgroundColor: Colors.white,
+                  foregroundImage: widget.ref == true
                       ? NetworkImage(
-                          widget.profileImage!,
+                          widget.profileImage,
                         )
                       : AssetImage(
-                          'assets/Logo2.png',
+                          'assets/dp.jpg',
                         ),
                 ),
                 SizedBox(
@@ -93,7 +101,11 @@ class _ProfilescreenState extends State<Profilescreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditProfile(),
+                        builder: (context) => EditProfile(
+                          profileImage: widget.profileImage == ''
+                              ? ''
+                              : widget.profileImage,
+                        ),
                       ),
                     );
                   },

@@ -16,14 +16,16 @@ import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({super.key});
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
   UserDetails user = UserDetails();
   int notificationCount = 100;
   int transactionCount = 100;
   int temp = 0;
-  String? profileImage;
+  String profileImage;
+
+  bool ref = true;
+  HomeScreen({required this.profileImage});
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -32,38 +34,50 @@ class _HomeScreenState extends State<HomeScreen> {
   bool isAlertSet = false;
   late double gameCoin, realMoney;
   double? aggregate = 0.001;
-
+  String profileImage1 = '';
   @override
   void initState() {
-    super.initState();
+    //getProfileImage();
     getData();
     getNotificationCount();
     getTransactionCount();
     getConnectivity();
-    getProfileImage();
+    //setImage();
+    //getProfileImage();
+    super.initState();
   }
 
-  Future getProfileImage() async {
-    try {
-      QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('Users').get();
-      snapshot.docs.forEach((doc) {
-        if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
-          widget.profileImage = doc['ProfileImage'];
-        }
-      });
-    } on FirebaseException catch (e) {
-      Fluttertoast.showToast(
-        msg: e.message.toString(),
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
-    }
-  }
+  // setImage() {
+  //   setState(() {
+  //     profileImage1 = widget.profileImage;
+  //   });
+  // }
+  // getProfileImage() async {
+  //   try {
+  //     QuerySnapshot snapshot =
+  //         await FirebaseFirestore.instance.collection('Users').get();
+  //     snapshot.docs.forEach((doc) {
+  //       if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
+  //         setState(() {
+  //           widget.profileImage = doc['ProfileImage'];
+  //         });
+  //       }
+  //     });
+  //     setState(() {
+  //       widget.profileImage != '' ? widget.ref = true : widget.ref = false;
+  //     });
+  //   } on FirebaseException catch (e) {
+  //     Fluttertoast.showToast(
+  //       msg: e.message.toString(),
+  //       toastLength: Toast.LENGTH_LONG,
+  //       gravity: ToastGravity.BOTTOM,
+  //       timeInSecForIosWeb: 3,
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //       fontSize: 16.0,
+  //     );
+  //   }
+  // }
 
   getNotificationCount() async {
     int count = 0;
@@ -100,7 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
-            doc['Status'] == 'unseen') {
+            doc['Status'] == 'unseen' &&
+            doc['TStatus'] == 'Completed') {
           if (tcount != widget.transactionCount) {
             tcount++;
             print('getting...');
@@ -351,12 +366,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 5, right: 10),
                   child: GestureDetector(
-                    onTap: () => Firebasefunctions().logout(context),
                     child: CircleAvatar(
-                      foregroundImage: widget.profileImage != null
-                          ? NetworkImage(widget.profileImage!)
+                      backgroundColor: Colors.white,
+                      foregroundImage: widget.profileImage != ''
+                          ? NetworkImage(widget.profileImage)
                           : AssetImage(
-                              'assets/Logo2.png',
+                              'assets/dp.jpg',
                             ),
                       maxRadius: 30,
                       minRadius: 20,

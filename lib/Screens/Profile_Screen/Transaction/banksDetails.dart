@@ -80,6 +80,7 @@ class _BanksdetailsState extends State<Banksdetails> {
                           MaterialPageRoute(
                             builder: (context) => Transactiondetails(
                               bankName: widget.bankNames[index],
+                              bankIcon: widget.bankLogos[index],
                             ),
                           ),
                         ),

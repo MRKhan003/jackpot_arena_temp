@@ -6,9 +6,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Widgets/notificationWidget.dart';
 
 class Notificationscreen extends StatefulWidget {
-  Notificationscreen({super.key});
-  @override
-  State<Notificationscreen> createState() => _NotificationscreenState();
   List<String> message = [];
   List<String> image = [];
   List<Timestamp> timeStamps = [];
@@ -17,15 +14,31 @@ class Notificationscreen extends StatefulWidget {
   String? currentUser;
   static bool isTapped = false;
   int notificationCount = 100;
-  String ref = '';
+  bool ref = true;
+  Notificationscreen({super.key});
+  @override
+  State<Notificationscreen> createState() => _NotificationscreenState();
 }
 
 class _NotificationscreenState extends State<Notificationscreen> {
   @override
   void initState() {
-    super.initState();
     _getData();
+    //loadItems();
+    super.initState();
   }
+
+  // loadItems() {
+  //   if (widget.message.isEmpty) {
+  //     setState(() {
+  //       widget.ref = false;
+  //     });
+  //   } else {
+  //     setState(() {
+  //       widget.ref = true;
+  //     });
+  //   }
+  // }
 
   Future<void> setData(String docName) async {
     try {
@@ -71,6 +84,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
       setState(() {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.message.length;
+        widget.message.isNotEmpty ? widget.ref = true : widget.ref = false;
       });
       return true;
     } on FirebaseException catch (e) {
@@ -137,7 +151,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                 ),
               ),
             ),
-            widget.message.isEmpty
+            widget.ref == false
                 ? SizedBox(
                     height: 100,
                     child: Center(

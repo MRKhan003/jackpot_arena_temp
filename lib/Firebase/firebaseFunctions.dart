@@ -124,11 +124,20 @@ class Firebasefunctions with ChangeNotifier {
 
   Future<bool> loggingIn(
       String email, String pass, BuildContext context) async {
+    String profileImage = '';
     //FirebaseAuth loginAuth = FirebaseAuth.instance;
     try {
       print('Testing...');
       UserCredential loginCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: pass);
+
+      FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .get()
+          .then((DocumentSnapshot doc) {
+        profileImage = doc['ProfileImage'];
+      });
       print('Testing...');
       if (loginCredential.user != null) {
         Fluttertoast.showToast(
@@ -149,7 +158,10 @@ class Firebasefunctions with ChangeNotifier {
       } else {
         print('Error');
       }
-      navigateToNextScreenAfterLogin(context);
+      navigateToNextScreenAfterLogin(
+        context,
+        profileImage,
+      );
       return true;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'invalid-credential') {
@@ -336,16 +348,22 @@ class Firebasefunctions with ChangeNotifier {
   }
 }
 
-void navigateToNextScreenAfterLogin(BuildContext context) {
+void navigateToNextScreenAfterLogin(BuildContext context, String profileImage) {
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => HomeScreen()),
+    MaterialPageRoute(
+      builder: (context) => HomeScreen(
+        profileImage: profileImage,
+      ),
+    ),
   );
 }
 
 void navigateToNextScreenAfterSignUp(BuildContext context) {
   Navigator.pushReplacement(
     context,
-    MaterialPageRoute(builder: (context) => UserLogin()),
+    MaterialPageRoute(
+      builder: (context) => UserLogin(),
+    ),
   );
 }
