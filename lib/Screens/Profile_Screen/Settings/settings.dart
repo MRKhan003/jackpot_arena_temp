@@ -1,10 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/Firebase/userController.dart';
 import 'package:jackpot_arena/Widgets/profileScreenWidget.dart';
@@ -40,32 +37,35 @@ class _SettingsSectionState extends State<SettingsSection> {
       appBar: AppBar(
         backgroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: GestureDetector(
-              onTap: () => showDialogBoxforPassword(),
-              child: Profilescreenwidget(
-                widgetContext: 'Change Password',
-                widgetIcon: Icons.password,
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                onTap: () => showDialogBoxforPassword(),
+                child: Profilescreenwidget(
+                  widgetContext: 'Change Password',
+                  widgetIcon: Icons.password,
+                  widgetColor: Colors.white,
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: GestureDetector(
-              onTap: () {
-                showDialogBox();
-              },
-              child: Profilescreenwidget(
-                widgetContext: 'Delete Account',
-                widgetIcon: Icons.remove,
-                widgetColor: Colors.red,
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                onTap: () {
+                  showDialogBox();
+                },
+                child: Profilescreenwidget(
+                  widgetContext: 'Delete Account',
+                  widgetIcon: Icons.remove,
+                  widgetColor: Colors.white,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -129,7 +129,7 @@ class _SettingsSectionState extends State<SettingsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         title: Text(
           'Password Update',
           style: GoogleFonts.poppins(
@@ -176,13 +176,15 @@ class _SettingsSectionState extends State<SettingsSection> {
           Center(
             child: ElevatedButton(
               onPressed: () {
-                if (widget.emailController.emailController != null &&
-                    widget.emailController.passwordController != null &&
-                    widget.emailController.cPasswordController != null) {
+                if (widget.emailController.emailController.text.isNotEmpty &&
+                    widget.emailController.passwordController.text.isNotEmpty &&
+                    widget
+                        .emailController.cPasswordController.text.isNotEmpty) {
                   Firebasefunctions().reauthenticateUser(
                     widget.emailController.emailController.text,
                     widget.emailController.passwordController.text,
                     widget.emailController.cPasswordController.text,
+                    context,
                   );
                 } else {
                   Fluttertoast.showToast(
@@ -195,12 +197,6 @@ class _SettingsSectionState extends State<SettingsSection> {
                     fontSize: 16.0,
                   );
                 }
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UserLogin(),
-                  ),
-                );
               },
               child: Text('Confirm'),
             ),

@@ -2,9 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
 import 'package:jackpot_arena/Controllers/transactionController.dart';
-import 'package:jackpot_arena/Firebase/userController.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
 
 class Transactiondetails extends StatefulWidget {
@@ -93,82 +91,100 @@ class _TransactiondetailsState extends State<Transactiondetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextFormField(
-              initialValue: widget.bankName,
-              readOnly: true,
-              decoration: InputDecoration(
-                labelText: 'Bank Name',
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextFormField(
-              controller: widget.transactioncontroller.accountNumberController,
-              keyboardType: TextInputType.name,
-              readOnly: false,
-              decoration: InputDecoration(
-                labelText: 'Account Number',
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              maxLength: 14,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextFormField(
-              controller: widget.transactioncontroller.nameController,
-              keyboardType: TextInputType.name,
-              readOnly: false,
-              decoration: InputDecoration(
-                labelText: 'Display Name',
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: TextFormField(
-              controller: widget.transactioncontroller.amountController,
-              keyboardType: TextInputType.number,
-              readOnly: false,
-              decoration: InputDecoration(
-                labelText: 'Amount',
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              print(
-                int.parse(
-                  widget.transactioncontroller.amountController.text,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                initialValue: widget.bankName,
+                readOnly: true,
+                decoration: InputDecoration(
+                  labelText: 'Bank Name',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
                 ),
-              );
-              if (widget.transactioncontroller.accountNumberController !=
-                      null &&
-                  widget.transactioncontroller.amountController != null &&
-                  widget.transactioncontroller.nameController != null) {
-                if (widget.userDetails.realMoney! >=
-                    int.parse(
-                      widget.transactioncontroller.amountController.text,
-                    )) {
-                  setTransactionData(
-                    widget.bankName,
-                    widget.transactioncontroller.accountNumberController.text,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                controller:
+                    widget.transactioncontroller.accountNumberController,
+                keyboardType: TextInputType.name,
+                readOnly: false,
+                decoration: InputDecoration(
+                  labelText: 'Account Number/Mobile Number',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLength: 14,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                controller: widget.transactioncontroller.nameController,
+                keyboardType: TextInputType.name,
+                readOnly: false,
+                decoration: InputDecoration(
+                  labelText: 'Display Name',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: TextFormField(
+                controller: widget.transactioncontroller.amountController,
+                keyboardType: TextInputType.number,
+                readOnly: false,
+                decoration: InputDecoration(
+                  labelText: 'Amount',
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                print(
+                  int.parse(
                     widget.transactioncontroller.amountController.text,
-                    widget.transactioncontroller.nameController.text,
-                  );
+                  ),
+                );
+                if (widget.transactioncontroller.accountNumberController.text
+                        .isNotEmpty &&
+                    widget.transactioncontroller.amountController.text
+                        .isNotEmpty &&
+                    widget
+                        .transactioncontroller.nameController.text.isNotEmpty) {
+                  if (widget.userDetails.realMoney! >=
+                      int.parse(
+                        widget.transactioncontroller.amountController.text,
+                      )) {
+                    setTransactionData(
+                      widget.bankName,
+                      widget.transactioncontroller.accountNumberController.text,
+                      widget.transactioncontroller.amountController.text,
+                      widget.transactioncontroller.nameController.text,
+                    );
+                  } else {
+                    Fluttertoast.showToast(
+                      msg:
+                          'Amount entered should be less than or equal to earning.',
+                      toastLength: Toast.LENGTH_LONG,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 3,
+                      backgroundColor: Colors.red,
+                      textColor: Colors.white,
+                      fontSize: 16.0,
+                    );
+                  }
                 } else {
                   Fluttertoast.showToast(
-                    msg:
-                        'Amount entered should be less than or equal to earning.',
+                    msg: 'Recheck your information and try again!',
                     toastLength: Toast.LENGTH_LONG,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 3,
@@ -177,21 +193,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                     fontSize: 16.0,
                   );
                 }
-              } else {
-                Fluttertoast.showToast(
-                  msg: 'Recheck your information and try again!',
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.BOTTOM,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
-              }
-            },
-            child: Text('Submit'),
-          ),
-        ],
+              },
+              child: Text('Submit'),
+            ),
+          ],
+        ),
       ),
     );
   }

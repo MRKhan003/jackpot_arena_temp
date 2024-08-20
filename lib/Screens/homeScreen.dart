@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
@@ -22,6 +23,7 @@ class HomeScreen extends StatefulWidget {
   int notificationCount = 100;
   int transactionCount = 100;
   int temp = 0;
+  String? profileImage;
 }
 
 class _HomeScreenState extends State<HomeScreen> {
@@ -38,6 +40,29 @@ class _HomeScreenState extends State<HomeScreen> {
     getNotificationCount();
     getTransactionCount();
     getConnectivity();
+    getProfileImage();
+  }
+
+  Future getProfileImage() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Users').get();
+      snapshot.docs.forEach((doc) {
+        if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
+          widget.profileImage = doc['ProfileImage'];
+        }
+      });
+    } on FirebaseException catch (e) {
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
   }
 
   getNotificationCount() async {
@@ -328,9 +353,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: GestureDetector(
                     onTap: () => Firebasefunctions().logout(context),
                     child: CircleAvatar(
-                      foregroundImage: AssetImage(
-                        'assets/Plink.png',
-                      ),
+                      foregroundImage: widget.profileImage != null
+                          ? NetworkImage(widget.profileImage!)
+                          : AssetImage(
+                              'assets/Logo2.png',
+                            ),
                       maxRadius: 30,
                       minRadius: 20,
                     ),
@@ -443,6 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (index == 2) {
               //getNotificationCount();
               widget.transactionCount = 0;
+              widget.temp = 0;
             } else if (index == 1) {
               //getNotificationCount();
               widget.temp = 1;

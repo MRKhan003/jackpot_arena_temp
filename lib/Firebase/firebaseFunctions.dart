@@ -47,8 +47,8 @@ class Firebasefunctions with ChangeNotifier {
     return true;
   }
 
-  Future<bool> signUp(
-      String email, String pass, String userName, BuildContext context) async {
+  Future<bool> signUp(String email, String pass, String userName, String name,
+      BuildContext context) async {
     UserDetails userDetails = UserDetails();
     if (getUserNames(userName) != false) {
       try {
@@ -60,6 +60,7 @@ class Firebasefunctions with ChangeNotifier {
           userDetails.userName = userName;
           userDetails.email = credential.user!.email;
           userDetails.password = pass;
+          userDetails.name = name;
         }
         Fluttertoast.showToast(
             msg: "Account Created Successfully",
@@ -279,7 +280,12 @@ class Firebasefunctions with ChangeNotifier {
   }
 
   void reauthenticateUser(
-      String email, String currentPassword, String newPassword) async {
+    String email,
+    String currentPassword,
+    String newPassword,
+    BuildContext context,
+  ) async {
+    int temp = 0;
     if (FirebaseAuth.instance.currentUser != null) {
       print(FirebaseAuth.instance.currentUser!.email);
       AuthCredential credential = EmailAuthProvider.credential(
@@ -290,19 +296,10 @@ class Firebasefunctions with ChangeNotifier {
       try {
         await FirebaseAuth.instance.currentUser!
             .reauthenticateWithCredential(credential);
-
         print('User reauthenticated successfully.');
-        FirebaseAuth.instance.currentUser!.updatePassword(newPassword);
-        Fluttertoast.showToast(
-          msg: 'Password Updated Successfuly',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 3,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        temp++;
       } on FirebaseException catch (e) {
+        print(temp);
         Fluttertoast.showToast(
           msg: e.message.toString(),
           toastLength: Toast.LENGTH_LONG,
@@ -316,6 +313,19 @@ class Firebasefunctions with ChangeNotifier {
       }
     } else {
       print('User is not signed in.');
+    }
+    if (temp > 0) {
+      FirebaseAuth.instance.currentUser!.updatePassword(newPassword);
+      Fluttertoast.showToast(
+        msg: 'Password Updated Successfuly',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+      navigateToNextScreenAfterSignUp(context);
     }
     print(FirebaseAuth.instance.currentUser!.email);
   }

@@ -143,6 +143,7 @@ class _AccountCreationState extends State<AccountCreation> {
                       controller.emailController.text,
                       controller.passwordController.text,
                       controller.userNameController.text,
+                      controller.nameController.text,
                       context);
                 } else {
                   Fluttertoast.showToast(

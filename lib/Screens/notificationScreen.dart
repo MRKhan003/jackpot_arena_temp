@@ -3,9 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jackpot_arena/Provider/counterProvider.dart';
 import 'package:jackpot_arena/Widgets/notificationWidget.dart';
-import 'package:provider/provider.dart';
 
 class Notificationscreen extends StatefulWidget {
   Notificationscreen({super.key});
@@ -140,12 +138,18 @@ class _NotificationscreenState extends State<Notificationscreen> {
               ),
             ),
             widget.message.isEmpty
-                ? Text(
-                    'No Notifications!',
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.poppins(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+                ? SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Text(
+                        'No Notifications!',
+                        textAlign: TextAlign.end,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          //fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
                     ),
                   )
                 : SizedBox(

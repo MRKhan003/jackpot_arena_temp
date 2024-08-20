@@ -1,12 +1,6 @@
-import 'dart:io';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:jackpot_arena/AccountAuth/loginUser.dart';
-import 'package:jackpot_arena/Firebase/firebase_api.dart';
-import 'package:jackpot_arena/Screens/Profile_Screen/editProfile.dart';
 import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
-import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
 
