@@ -25,7 +25,8 @@ class _BanksdetailsState extends State<Banksdetails> {
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Banks');
-      QuerySnapshot snapshot = await reference.get();
+      QuerySnapshot snapshot =
+          await reference.orderBy('Bank_Name', descending: false).get();
       snapshot.docs.forEach((doc) {
         if (widget.size != widget.bankNames.length) {
           setState(() {
@@ -47,7 +48,9 @@ class _BanksdetailsState extends State<Banksdetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(

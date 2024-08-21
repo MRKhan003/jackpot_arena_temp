@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
+import 'package:jackpot_arena/Screens/Profile_Screen/Transaction/banksDetails.dart';
 import 'package:jackpot_arena/Widgets/transactionWidget.dart';
 
 class Withdrawhistoryscreen extends StatefulWidget {
@@ -160,32 +161,40 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                       Spacer(),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
+                        child: GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Banksdetails(),
                             ),
-                            color: Color(0xffECB607),
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Text(
-                                  'Widthdraw',
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 12,
-                                    color: Colors.black,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              color: Color(0xffECB607),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    'Widthdraw',
+                                    style: GoogleFonts.poppins(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Image.asset(
-                                  'assets/Icon1.png',
-                                  height: 25,
-                                ),
-                              ],
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Image.asset(
+                                    'assets/Icon1.png',
+                                    height: 25,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

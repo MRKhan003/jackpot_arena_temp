@@ -13,6 +13,7 @@ class UserDatabase {
         'UserName': details.userName,
         'UserEmail': details.email,
         'Name': details.name,
+        'ProfileImage': '',
       });
       await ffObject
           .collection('Users')

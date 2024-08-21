@@ -71,7 +71,7 @@ class _GamesScreenState extends State<GamesScreen> {
 
   String? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   BannerAd? _bannerAd;
   static final BannerAdListener bannerAdListener = BannerAdListener(
     onAdLoaded: (ad) => debugPrint('ad loaded'),
@@ -156,31 +156,7 @@ class _GamesScreenState extends State<GamesScreen> {
                                   search.imageURL,
                                 ),
                                 title: Text(search.context),
-                                onTap: () {
-                                  // if (search.context == 'Plane Crash Game') {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => Screen1(),
-                                  //     ),
-                                  //   );
-                                  // } else if (search.context == 'Plinko') {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => Screen3(),
-                                  //     ),
-                                  //   );
-                                  // } else if (search.context ==
-                                  //     'Dice Money Cash') {
-                                  //   Navigator.push(
-                                  //     context,
-                                  //     MaterialPageRoute(
-                                  //       builder: (context) => Screen2(),
-                                  //     ),
-                                  //   );
-                                  // }
-                                },
+                                onTap: () {},
                               );
                             },
                           ),

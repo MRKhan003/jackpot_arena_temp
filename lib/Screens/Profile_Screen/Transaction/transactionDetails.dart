@@ -121,7 +121,9 @@ class _TransactiondetailsState extends State<Transactiondetails> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(

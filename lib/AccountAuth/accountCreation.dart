@@ -152,8 +152,8 @@ class _AccountCreationState extends State<AccountCreation> {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.BOTTOM,
                       timeInSecForIosWeb: 5,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
+                      backgroundColor: Color(0xffF8F8F8),
+                      textColor: Colors.red,
                       fontSize: 16.0);
                 }
               },

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +39,9 @@ class _ProfilescreenState extends State<Profilescreen> {
         if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
           setState(() {
             widget.profileImage = doc['ProfileImage'];
+            widget.profileImage != '' ? widget.ref = true : widget.ref = false;
           });
         }
-      });
-      setState(() {
-        widget.profileImage != '' ? widget.ref = true : widget.ref = false;
       });
     } on FirebaseException catch (e) {
       Fluttertoast.showToast(
@@ -52,21 +49,12 @@ class _ProfilescreenState extends State<Profilescreen> {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
         fontSize: 16.0,
       );
     }
   }
-
-  // getCurrentUser() async {
-  //   try {
-  //     widget.confirmEmail = await FirebaseAuth.instance.currentUser!.email;
-  //     print(widget.confirmEmail);
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -82,16 +70,21 @@ class _ProfilescreenState extends State<Profilescreen> {
               //mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 CircleAvatar(
-                  maxRadius: 70,
-                  minRadius: 50,
-                  backgroundColor: Colors.white,
-                  foregroundImage: widget.ref == true
-                      ? NetworkImage(
-                          widget.profileImage,
-                        )
-                      : AssetImage(
-                          'assets/dp.jpg',
-                        ),
+                  maxRadius: 72,
+                  minRadius: 52,
+                  backgroundColor: Colors.grey,
+                  child: CircleAvatar(
+                    maxRadius: 70,
+                    minRadius: 50,
+                    backgroundColor: Colors.white,
+                    foregroundImage: widget.ref == true
+                        ? NetworkImage(
+                            widget.profileImage,
+                          )
+                        : AssetImage(
+                            'assets/Logo2.png',
+                          ),
+                  ),
                 ),
                 SizedBox(
                   height: 15,

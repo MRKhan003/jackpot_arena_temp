@@ -5,11 +5,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:jackpot_arena/Firebase/firebaseFunctions.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
+import 'package:jackpot_arena/Screens/Profile_Screen/Transaction/banksDetails.dart';
+import 'package:jackpot_arena/Screens/Profile_Screen/editProfile.dart';
 import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Screens/notificationScreen.dart';
@@ -114,8 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
-            doc['Status'] == 'unseen' &&
-            doc['TStatus'] == 'Completed') {
+                doc['Status'] == 'unseen' &&
+                doc['TStatus'] == 'Completed' ||
+            doc['Status'] == 'unseen' && doc['TStatus'] == 'Failed') {
           if (tcount != widget.transactionCount) {
             tcount++;
             print('getting...');
@@ -311,7 +312,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       Flexible(
                         child: GestureDetector(
-                          onTap: () => null,
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Banksdetails(),
+                            ),
+                          ),
                           child: Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
@@ -366,15 +372,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 5, right: 10),
                   child: GestureDetector(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditProfile(
+                          profileImage: widget.profileImage,
+                        ),
+                      ),
+                    ),
                     child: CircleAvatar(
-                      backgroundColor: Colors.white,
-                      foregroundImage: widget.profileImage != ''
-                          ? NetworkImage(widget.profileImage)
-                          : AssetImage(
-                              'assets/dp.jpg',
-                            ),
-                      maxRadius: 30,
-                      minRadius: 20,
+                      maxRadius: 32,
+                      minRadius: 22,
+                      backgroundColor: Colors.grey,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.white,
+                        foregroundImage: widget.profileImage != ''
+                            ? NetworkImage(widget.profileImage)
+                            : AssetImage(
+                                'assets/dp.jpg',
+                              ),
+                        maxRadius: 30,
+                        minRadius: 20,
+                      ),
                     ),
                   ),
                 ),

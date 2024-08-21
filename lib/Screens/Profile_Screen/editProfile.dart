@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jackpot_arena/Firebase/userController.dart';
-import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
 
 class EditProfile extends StatefulWidget {
   String? currentUser;
@@ -101,68 +100,6 @@ class _EditProfileState extends State<EditProfile> {
       print(e.message);
     }
   }
-
-  // Future<void> getLength() async {
-  //   try {
-  //     QuerySnapshot querySnapshot =
-  //         await FirebaseFirestore.instance.collection('Users').get();
-  //     querySnapshot.docs.forEach((doc) {
-  //       setState(() {
-  //         widget.firebaseLength.add(doc['UserEmail']);
-  //       });
-  //     });
-  //     print(widget.firebaseLength.length);
-  //   } on FirebaseException catch (e) {
-  //     print(e.message);
-  //   }
-  // }
-
-  // Future<void> setData(String? newEmail, String? newUserName) async {
-  //   int temp = 0;
-  //   int temp1 = 0;
-  //   try {
-  //     QuerySnapshot snapshot =
-  //         await FirebaseFirestore.instance.collection('Users').get();
-  //     print('Loading...');
-  //     snapshot.docs.forEach((doc) {
-  //       if (doc['UserName'] != widget.newUserName ||
-  //           doc['UserName'] != widget.newUserName!.toLowerCase()) {
-  //         if (doc['UserEmail'] == widget.currentUser &&
-  //             temp == widget.firebaseLength.length) {
-  //           newEmail != null
-  //               ? doc.reference.update({'UserEmail': newEmail})
-  //               : doc.reference.update({'UserEmail': widget.currentEmail});
-  //           newUserName != null
-  //               ? doc.reference.update({'UserName': newUserName})
-  //               : doc.reference.update({'UserName': widget.currentUserName});
-
-  //           print(newEmail);
-  //           print(newUserName);
-  //         } else {
-  //           temp1++;
-  //           temp1 > 0
-  //               ? Fluttertoast.showToast(
-  //                   msg: 'User name already taken',
-  //                   toastLength: Toast.LENGTH_LONG,
-  //                   gravity: ToastGravity.BOTTOM,
-  //                   timeInSecForIosWeb: 3,
-  //                   backgroundColor: Colors.red,
-  //                   textColor: Colors.white,
-  //                   fontSize: 16.0,
-  //                 )
-  //               : null;
-  //           print(temp1);
-  //         }
-  //       } else {
-  //         setState(() {
-  //           temp++;
-  //         });
-  //       }
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
 
   Future<bool> isDisplayNameTaken(String? displayName) async {
     final result = await FirebaseFirestore.instance
@@ -342,8 +279,8 @@ class _EditProfileState extends State<EditProfile> {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
         fontSize: 16.0,
       );
       return null;
@@ -368,8 +305,8 @@ class _EditProfileState extends State<EditProfile> {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.black,
         fontSize: 16.0,
       );
     }
@@ -380,7 +317,9 @@ class _EditProfileState extends State<EditProfile> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: widget.currentDisplayName == null
@@ -395,7 +334,7 @@ class _EditProfileState extends State<EditProfile> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Stack(
-                    alignment: Alignment.bottomRight,
+                    alignment: Alignment.bottomCenter,
                     children: [
                       GestureDetector(
                         onTap: () {
@@ -404,7 +343,6 @@ class _EditProfileState extends State<EditProfile> {
                         child: CircleAvatar(
                           maxRadius: 72,
                           minRadius: 52,
-                          foregroundColor: Colors.grey,
                           backgroundColor: Colors.grey,
                           child: CircleAvatar(
                             maxRadius: 70,
@@ -423,15 +361,34 @@ class _EditProfileState extends State<EditProfile> {
                         onTap: () {
                           _getImageFromGallery();
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: Icon(
-                            Icons.camera_alt,
-                            size: 28,
-                            color: Colors.red,
+                        child: Container(
+                          //height: 100,
+                          constraints: BoxConstraints.tight(
+                            Size.fromRadius(70),
+                          ),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.transparent,
+                                Color(0xff434599),
+                              ],
+                            ),
+                          ),
+                          child: Container(
+                            alignment: Alignment.bottomCenter,
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 20),
+                              child: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                   Padding(
@@ -441,19 +398,7 @@ class _EditProfileState extends State<EditProfile> {
                       onChanged: (value) => setState(() {
                         widget.newUserName = value;
                       }),
-                      //onChanged: (newValue) => widget.newDisplayName = newValue,
-                      //controller: widget.controller.usernameController,
-                      decoration: InputDecoration(
-                          //helperText: widget.currentUserName,
-                          //prefixText: widget.currentUserName,
-                          // label: Text(
-                          //   widget.currentUserName != null
-                          //       ? widget.currentUserName!
-                          //       : '',
-                          //   // widget.currentUserName != null ? widget.currentUserName! : '',
-                          // ),
-                          // floatingLabelBehavior: FloatingLabelBehavior.never,
-                          ),
+                      decoration: InputDecoration(),
                     ),
                   ),
                   Padding(
@@ -464,17 +409,7 @@ class _EditProfileState extends State<EditProfile> {
                         widget.newEmail = value;
                       }),
                       //controller: widget.controller.emailController,
-                      decoration: InputDecoration(
-                          // //prefixText: widget.currentEmail,
-                          // //prefix: Text(widget.currentEmail!),
-                          // //prefixStyle: TextStyle(),
-                          // // suffix: Text(widget.currentEmail!),
-                          // label: Text(
-                          //   widget.currentEmail != null ? widget.currentEmail! : '',
-                          //   // widget.currentEmail != null ? widget.currentEmail! : '',
-                          // ),
-                          // floatingLabelBehavior: FloatingLabelBehavior.never,
-                          ),
+                      decoration: InputDecoration(),
                     ),
                   ),
                   Padding(
@@ -484,16 +419,7 @@ class _EditProfileState extends State<EditProfile> {
                       onChanged: (value) => setState(() {
                         widget.newDisplayName = value;
                       }),
-                      decoration: InputDecoration(
-                          // prefixText: widget.currentDisplayName,
-                          // label: Text(
-                          //   widget.currentDisplayName != null
-                          //       ? widget.currentDisplayName!
-                          //       : '',
-                          //   // widget.currentEmail != null ? widget.currentEmail! : '',
-                          // ),
-                          // floatingLabelBehavior: FloatingLabelBehavior.never,
-                          ),
+                      decoration: InputDecoration(),
                     ),
                   ),
                   Padding(
@@ -505,20 +431,6 @@ class _EditProfileState extends State<EditProfile> {
                           widget.newEmail,
                           widget.newDisplayName,
                         );
-                        // Navigator.pushReplacement(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => Profilescreen(),
-                        //   ),
-                        // );
-                        // setData(
-                        //   widget.controller.emailController.text.isEmpty
-                        //       ? widget.currentEmail
-                        //       : widget.controller.emailController.text,
-                        //   widget.controller.nameController.text.isEmpty
-                        //       ? widget.currentUserName
-                        //       : widget.controller.nameController.text,
-                        // );
                       },
                       child: Text(
                         'Save',

@@ -13,46 +13,36 @@ class Firebasefunctions with ChangeNotifier {
   FirebaseAuth auth = FirebaseAuth.instance;
   late bool exception;
   List<String> userNames = [];
-  Future<bool> getUserNames(String userName) async {
-    CollectionReference getUserName =
-        FirebaseFirestore.instance.collection('Users');
-    QuerySnapshot snapshot = await getUserName.get();
-    snapshot.docs.forEach((doc) {
-      userNames.add(doc['UserName']);
-    });
-    print(userNames);
-    for (var i = 0; i < userNames.length; i++) {
-      try {
-        if (userNames.length == 0) {
-          print('Successfull');
-        } else if (userName == userNames[i]) {
-          Fluttertoast.showToast(
-              msg: "User name already exist",
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 5,
-              backgroundColor: Colors.yellow,
-              textColor: Colors.white,
-              fontSize: 16.0);
-          return false;
-        } else {
-          continue;
-        }
-        return true;
-      } catch (e) {
-        print(e);
-        return false;
-      }
-    }
-    return true;
+  Future<bool> isDisplayNameTaken(String? userName) async {
+    final nameResult = await FirebaseFirestore.instance
+        .collection('Users')
+        .where('UserName', isEqualTo: userName)
+        .get();
+    print('User name check');
+    return nameResult.docs.isNotEmpty;
   }
 
   Future<bool> signUp(String email, String pass, String userName, String name,
       BuildContext context) async {
+    bool isTakenName;
     UserDetails userDetails = UserDetails();
-    if (getUserNames(userName) != false) {
+
+    isTakenName = await isDisplayNameTaken(userName);
+    if (isTakenName) {
+      Fluttertoast.showToast(
+        msg: 'User name already in use',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+      return false;
+    } else {
       try {
         // getUserNames(userName);
+
         UserCredential credential = await auth.createUserWithEmailAndPassword(
             email: email, password: pass);
         if (credential.user != null) {
@@ -66,9 +56,9 @@ class Firebasefunctions with ChangeNotifier {
             msg: "Account Created Successfully",
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 5,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
+            timeInSecForIosWeb: 3,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.green,
             fontSize: 16.0);
         UserDatabase().sendUserData(userDetails);
         navigateToNextScreenAfterSignUp(context);
@@ -79,9 +69,9 @@ class Firebasefunctions with ChangeNotifier {
               msg: 'Use a strong password',
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
-              timeInSecForIosWeb: 5,
-              backgroundColor: Colors.yellow,
-              textColor: Colors.white,
+              timeInSecForIosWeb: 3,
+              backgroundColor: Color(0xffF8F8F8),
+              textColor: Colors.red,
               fontSize: 16.0);
           return false;
         } else if (e.code == 'email-already-in-use') {
@@ -90,8 +80,8 @@ class Firebasefunctions with ChangeNotifier {
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
-              backgroundColor: Colors.yellow,
-              textColor: Colors.white,
+              backgroundColor: Color(0xffF8F8F8),
+              textColor: Colors.red,
               fontSize: 16.0);
           return false;
         } else if (e.code == 'network-request-failed') {
@@ -100,8 +90,8 @@ class Firebasefunctions with ChangeNotifier {
               toastLength: Toast.LENGTH_LONG,
               gravity: ToastGravity.BOTTOM,
               timeInSecForIosWeb: 5,
-              backgroundColor: Colors.yellow,
-              textColor: Colors.white,
+              backgroundColor: Color(0xffF8F8F8),
+              textColor: Colors.red,
               fontSize: 16.0);
           return false;
         }
@@ -112,13 +102,11 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         return false;
       }
-    } else {
-      return false;
     }
   }
 
@@ -152,8 +140,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 3,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.green,
             fontSize: 16.0);
       } else {
         print('Error');
@@ -170,8 +158,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         print(e.code);
         return false;
@@ -181,8 +169,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         print('$e');
         return false;
@@ -192,8 +180,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         print('$e');
         return false;
@@ -203,8 +191,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         print('$e');
         return false;
@@ -214,8 +202,8 @@ class Firebasefunctions with ChangeNotifier {
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
+            backgroundColor: Color(0xffF8F8F8),
+            textColor: Colors.red,
             fontSize: 16.0);
         print(e.code);
       }
@@ -226,8 +214,8 @@ class Firebasefunctions with ChangeNotifier {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 5,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
+          backgroundColor: Color(0xffF8F8F8),
+          textColor: Colors.red,
           fontSize: 16.0);
       print('$e');
       return false;
@@ -278,7 +266,31 @@ class Firebasefunctions with ChangeNotifier {
     BuildContext context,
   ) async {
     try {
+      await FirebaseFirestore.instance
+          .collection(
+            'Users',
+          )
+          .doc(
+            FirebaseAuth.instance.currentUser!.email,
+          )
+          .delete();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection(
+            'Notifications',
+          )
+          .where(
+            'UserID',
+            isEqualTo: FirebaseAuth.instance.currentUser!.email,
+          )
+          .get();
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+
       await FirebaseAuth.instance.currentUser!.delete();
+      print(
+        "User notifications deleted successfully.",
+      );
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
@@ -317,8 +329,8 @@ class Firebasefunctions with ChangeNotifier {
           toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.BOTTOM,
           timeInSecForIosWeb: 3,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
+          backgroundColor: Color(0xffF8F8F8),
+          textColor: Colors.red,
           fontSize: 16.0,
         );
         print(e.message);
@@ -333,11 +345,11 @@ class Firebasefunctions with ChangeNotifier {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.green,
         fontSize: 16.0,
       );
-      navigateToNextScreenAfterSignUp(context);
+      navigateToNextScreenAfterSettings(context);
     }
     print(FirebaseAuth.instance.currentUser!.email);
   }
@@ -360,6 +372,15 @@ void navigateToNextScreenAfterLogin(BuildContext context, String profileImage) {
 }
 
 void navigateToNextScreenAfterSignUp(BuildContext context) {
+  Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(
+      builder: (context) => UserLogin(),
+    ),
+  );
+}
+
+void navigateToNextScreenAfterSettings(BuildContext context) {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(

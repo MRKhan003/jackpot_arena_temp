@@ -35,7 +35,9 @@ class _SettingsSectionState extends State<SettingsSection> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        toolbarHeight: 70,
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -74,17 +76,17 @@ class _SettingsSectionState extends State<SettingsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.red,
+        backgroundColor: Color(0xffF8F8F8),
         title: Text(
           'Confirm account delete!',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         content: Text(
           'Enter your email to delete account',
           style: GoogleFonts.poppins(
-            color: Colors.white,
+            color: Colors.black,
           ),
         ),
         contentPadding: EdgeInsets.fromLTRB(
@@ -112,8 +114,8 @@ class _SettingsSectionState extends State<SettingsSection> {
                         toastLength: Toast.LENGTH_LONG,
                         gravity: ToastGravity.BOTTOM,
                         timeInSecForIosWeb: 3,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
+                        backgroundColor: Color(0xffF8F8F8),
+                        textColor: Colors.red,
                         fontSize: 16.0,
                       );
               },
@@ -129,7 +131,7 @@ class _SettingsSectionState extends State<SettingsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
         title: Text(
           'Password Update',
           style: GoogleFonts.poppins(
@@ -151,6 +153,7 @@ class _SettingsSectionState extends State<SettingsSection> {
         actions: [
           TextField(
             controller: widget.emailController.emailController,
+            keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'Email',
@@ -158,6 +161,7 @@ class _SettingsSectionState extends State<SettingsSection> {
           ),
           TextField(
             controller: widget.emailController.passwordController,
+            keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'Current Password',
@@ -165,6 +169,7 @@ class _SettingsSectionState extends State<SettingsSection> {
           ),
           TextField(
             controller: widget.emailController.cPasswordController,
+            keyboardType: TextInputType.visiblePassword,
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'New Password',
@@ -192,8 +197,8 @@ class _SettingsSectionState extends State<SettingsSection> {
                     toastLength: Toast.LENGTH_LONG,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 3,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
+                    backgroundColor: Color(0xffF8F8F8),
+                    textColor: Colors.red,
                     fontSize: 16.0,
                   );
                 }

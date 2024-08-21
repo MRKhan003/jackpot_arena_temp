@@ -118,8 +118,8 @@ class _UserLoginState extends State<UserLogin> {
                       toastLength: Toast.LENGTH_SHORT,
                       gravity: ToastGravity.CENTER,
                       timeInSecForIosWeb: 5,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
+                      backgroundColor: Color(0xffF8F8F8),
+                      textColor: Colors.red,
                       fontSize: 16.0);
                 } else {
                   Firebasefunctions().loggingIn(
