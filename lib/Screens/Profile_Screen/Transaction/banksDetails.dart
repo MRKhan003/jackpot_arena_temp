@@ -72,7 +72,11 @@ class _BanksdetailsState extends State<Banksdetails> {
               ),
             ),
             widget.bankNames.isEmpty
-                ? CircularProgressIndicator()
+                ? CircularProgressIndicator(
+                    color: Color(
+                      0xffFF6007,
+                    ),
+                  )
                 : SizedBox(
                     height: 1500,
                     child: ListView.builder(

@@ -30,6 +30,8 @@ class Transactionwidget extends StatelessWidget {
         child: Row(
           children: [
             CircleAvatar(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.white,
               foregroundImage: NetworkImage(
                 bankIcon,
               ),

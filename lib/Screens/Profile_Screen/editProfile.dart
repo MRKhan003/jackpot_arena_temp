@@ -373,7 +373,7 @@ class _EditProfileState extends State<EditProfile> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Color(0xff434599),
+                                Color(0xffEFCC4E),
                               ],
                             ),
                           ),

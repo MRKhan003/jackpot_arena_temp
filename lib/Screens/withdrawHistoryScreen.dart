@@ -233,10 +233,10 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                     ),
                   )
                 : SizedBox(
-                    height: 1500,
+                    height: 600,
                     child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: widget.withdrawMessage.length,
+                      //scrollDirection: Axis.vertical,
+                      itemCount: widget.tStatus.length,
                       itemBuilder: (context, index) {
                         return Padding(
                           padding: const EdgeInsets.only(

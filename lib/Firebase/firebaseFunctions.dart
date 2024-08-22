@@ -266,14 +266,18 @@ class Firebasefunctions with ChangeNotifier {
     BuildContext context,
   ) async {
     try {
-      await FirebaseFirestore.instance
+      QuerySnapshot snapshot = await FirebaseFirestore.instance
           .collection(
             'Users',
           )
-          .doc(
-            FirebaseAuth.instance.currentUser!.email,
+          .where(
+            'UserEmail',
+            isEqualTo: FirebaseAuth.instance.currentUser!.email,
           )
-          .delete();
+          .get();
+      for (QueryDocumentSnapshot doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection(
             'Notifications',

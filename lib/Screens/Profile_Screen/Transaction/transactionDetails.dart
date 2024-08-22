@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:jackpot_arena/Controllers/transactionController.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
@@ -11,6 +12,10 @@ class Transactiondetails extends StatefulWidget {
   UserDetails userDetails = UserDetails();
   Transactioncontroller transactioncontroller = Transactioncontroller();
   int userAmount = 0;
+  bool? validate;
+  bool? accountValueValidate;
+  bool? displayValueValidate;
+  bool? amountValueValidate;
   Transactiondetails({
     required this.bankName,
     required this.bankIcon,
@@ -30,16 +35,21 @@ class _TransactiondetailsState extends State<Transactiondetails> {
 
   updateData() async {
     //UserDetails setUser = UserDetails();
+    setState(() {
+      widget.userDetails.realMoney =
+          widget.userDetails.realMoney! - widget.userAmount;
+    });
     try {
       print(widget.userDetails.realMoney);
       print(widget.userAmount);
-      FirebaseFirestore.instance
+      print(FirebaseAuth.instance.currentUser!.uid);
+      await FirebaseFirestore.instance
           .collection('Users')
           .doc(widget.userDetails.email)
           .collection('Earning')
-          .doc()
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({
-        'Real Money': widget.userDetails.realMoney! - widget.userAmount,
+        'Real Money': widget.userDetails.realMoney,
       });
 
       print(
@@ -47,6 +57,15 @@ class _TransactiondetailsState extends State<Transactiondetails> {
       );
       return true;
     } on FirebaseException catch (e) {
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 10,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
       print(e.message.toString());
       return false;
     }
@@ -75,7 +94,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
 
   getCurrentUser() async {
     try {
-      widget.userDetails.email = await FirebaseAuth.instance.currentUser!.email;
+      final email = await FirebaseAuth.instance.currentUser!.email;
+      setState(() {
+        widget.userDetails.email = email;
+      });
+
       print(widget.userDetails.email);
     } catch (e) {
       print(e);
@@ -106,8 +129,8 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 3,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.green,
         fontSize: 16.0,
       );
       updateData();
@@ -128,55 +151,147 @@ class _TransactiondetailsState extends State<Transactiondetails> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                initialValue: widget.bankName,
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Bank Name',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+            Center(
+              child: CircleAvatar(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.white,
+                foregroundImage: NetworkImage(
+                  widget.bankIcon,
                 ),
+                maxRadius: 50,
+                minRadius: 40,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                controller:
-                    widget.transactioncontroller.accountNumberController,
-                keyboardType: TextInputType.name,
-                readOnly: false,
-                decoration: InputDecoration(
-                  labelText: 'Account Number/Mobile Number',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
-                maxLength: 14,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                controller: widget.transactioncontroller.nameController,
-                keyboardType: TextInputType.name,
-                readOnly: false,
-                decoration: InputDecoration(
-                  labelText: 'Display Name',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: TextFormField(
-                controller: widget.transactioncontroller.amountController,
-                onChanged: (value) => setState(() {
-                  widget.userAmount = int.parse(value);
-                }),
-                keyboardType: TextInputType.number,
-                readOnly: false,
-                decoration: InputDecoration(
-                  labelText: 'Amount',
-                  floatingLabelBehavior: FloatingLabelBehavior.always,
+              child: Form(
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      initialValue: widget.bankName,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        labelText: 'Bank Name',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                    ),
+                    TextFormField(
+                      onChanged: (accountValue) {
+                        if (accountValue.isEmpty) {
+                          setState(() {
+                            widget.accountValueValidate = false;
+                          });
+                        } else if (accountValue.length != 14) {
+                          setState(() {
+                            widget.accountValueValidate = false;
+                          });
+                        } else {
+                          setState(() {
+                            widget.accountValueValidate = true;
+                          });
+                        }
+                      },
+                      controller:
+                          widget.transactioncontroller.accountNumberController,
+                      keyboardType: TextInputType.name,
+                      readOnly: false,
+                      decoration: InputDecoration(
+                        labelText: 'Account Number/Mobile Number',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                        //errorMaxLines: 14,
+                      ),
+                      maxLength: widget.bankName == 'Jazz Cash' ||
+                              widget.bankName == 'NayaPay' ||
+                              widget.bankName == 'SadaPay' ||
+                              widget.bankName == 'EasyPaisa'
+                          ? 11
+                          : 14,
+                      maxLengthEnforcement: MaxLengthEnforcement.enforced,
+                      // Set maximum length to 14 digits
+                      validator: (accountValue) {
+                        if (accountValue!.isEmpty &&
+                            widget.accountValueValidate == false) {
+                          return 'Please enter account number';
+                        }
+                        if (accountValue.length < 11 ||
+                            accountValue.length > 14 &&
+                                widget.accountValueValidate == false) {
+                          if (widget.bankName == 'Jazz Cash' ||
+                              widget.bankName == 'NayaPay' ||
+                              widget.bankName == 'SadaPay' ||
+                              widget.bankName == 'EasyPaisa') {
+                            return 'Account number should be of 11 digits';
+                          } else
+                            return 'Account number should be between of 14 digits';
+                        }
+                        // Additional validation if needed
+                        return null; // Return null if validation passes
+                      },
+                    ),
+                    TextFormField(
+                      onChanged: (displayValue) {
+                        if (displayValue.isEmpty) {
+                          setState(() {
+                            widget.displayValueValidate = false;
+                          });
+                        } else {
+                          setState(() {
+                            widget.displayValueValidate = true;
+                          });
+                        }
+                      },
+                      controller: widget.transactioncontroller.nameController,
+                      keyboardType: TextInputType.name,
+                      spellCheckConfiguration: SpellCheckConfiguration(
+                        spellCheckService: DefaultSpellCheckService(),
+                      ),
+                      readOnly: false,
+                      decoration: InputDecoration(
+                        labelText: 'Display Name',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                      validator: (displayValue) {
+                        if (displayValue!.isEmpty &&
+                            widget.displayValueValidate == false) {
+                          return 'Please enter account display name';
+                        }
+
+                        // Additional validation if needed
+                        return null; // Return null if validation passes
+                      },
+                    ),
+                    TextFormField(
+                      onChanged: (amountValue) {
+                        if (amountValue.isEmpty) {
+                          setState(() {
+                            widget.amountValueValidate = false;
+                          });
+                        } else {
+                          setState(() {
+                            widget.amountValueValidate = true;
+                            widget.userAmount = int.parse(amountValue);
+                          });
+                        }
+                      },
+                      controller: widget.transactioncontroller.amountController,
+                      keyboardType: TextInputType.number,
+                      readOnly: false,
+                      decoration: InputDecoration(
+                        labelText: 'Amount',
+                        floatingLabelBehavior: FloatingLabelBehavior.always,
+                      ),
+                      validator: (amountValue) {
+                        if (amountValue!.isEmpty &&
+                            widget.amountValueValidate == false) {
+                          return 'Please enter a valid amount';
+                        }
+
+                        // Additional validation if needed
+                        return null; // Return null if validation passes
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -192,38 +307,32 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                     widget.transactioncontroller.amountController.text
                         .isNotEmpty &&
                     widget
-                        .transactioncontroller.nameController.text.isNotEmpty) {
-                  if (widget.userDetails.realMoney! >=
-                      int.parse(
-                        widget.transactioncontroller.amountController.text,
-                      )) {
-                    setTransactionData(
-                      widget.bankName,
-                      widget.transactioncontroller.accountNumberController.text,
-                      widget.transactioncontroller.amountController.text,
-                      widget.transactioncontroller.nameController.text,
-                      widget.bankIcon,
-                    );
-                  } else {
-                    Fluttertoast.showToast(
-                      msg:
-                          'Amount entered should be less than or equal to earning.',
-                      toastLength: Toast.LENGTH_LONG,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 3,
-                      backgroundColor: Colors.red,
-                      textColor: Colors.white,
-                      fontSize: 16.0,
-                    );
-                  }
+                        .transactioncontroller.nameController.text.isNotEmpty &&
+                    widget.userDetails.realMoney! >=
+                        int.parse(
+                          widget.transactioncontroller.amountController.text,
+                        ) &&
+                    widget.transactioncontroller.accountNumberController.text
+                            .length >=
+                        11 &&
+                    widget.transactioncontroller.accountNumberController.text
+                            .length <=
+                        14) {
+                  setTransactionData(
+                    widget.bankName,
+                    widget.transactioncontroller.accountNumberController.text,
+                    widget.transactioncontroller.amountController.text,
+                    widget.transactioncontroller.nameController.text,
+                    widget.bankIcon,
+                  );
                 } else {
                   Fluttertoast.showToast(
                     msg: 'Recheck your information and try again!',
                     toastLength: Toast.LENGTH_LONG,
                     gravity: ToastGravity.BOTTOM,
                     timeInSecForIosWeb: 3,
-                    backgroundColor: Colors.red,
-                    textColor: Colors.white,
+                    backgroundColor: Color(0xffF8F8F8),
+                    textColor: Colors.red,
                     fontSize: 16.0,
                   );
                 }

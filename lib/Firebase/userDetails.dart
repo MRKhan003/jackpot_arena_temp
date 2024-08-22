@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserDetails {
   String? name, userName, email, password, cPassword, userID;
-  double? realMoney;
-  int? gameCoins;
+  int? gameCoins, realMoney;
   Timestamp? creationTime;
   bool? isLoadingStartupData;
   UserDetails({

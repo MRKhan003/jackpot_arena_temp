@@ -19,7 +19,7 @@ class UserDatabase {
           .collection('Users')
           .doc(details.email)
           .collection('Earning')
-          .doc()
+          .doc(details.userID)
           .set({
         'Game Coins': 0,
         'Real Money': 0,

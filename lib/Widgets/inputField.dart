@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class InputFields extends StatefulWidget {
   String fieldText;
@@ -31,6 +32,9 @@ class _InputFieldsState extends State<InputFields> {
       controller: widget.textController,
       cursorColor: Colors.black,
       enableSuggestions: true,
+      spellCheckConfiguration: SpellCheckConfiguration(
+        spellCheckService: DefaultSpellCheckService(),
+      ),
       keyboardType: widget.keyboardType,
       autocorrect: true,
       obscureText: widget.fieldText == 'Password' ||
