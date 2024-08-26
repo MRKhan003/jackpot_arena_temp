@@ -5,6 +5,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
@@ -32,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late StreamSubscription subscription;
   var isDeviceConnected = false;
   bool isAlertSet = false;
-  late double gameCoin, realMoney;
+  late int gameCoin, realMoney, refund;
   double? aggregate = 0.001;
   String profileImage1 = '';
   @override
@@ -43,41 +44,36 @@ class _HomeScreenState extends State<HomeScreen> {
     getTransactionCount();
     getConnectivity();
     //setImage();
-    //getProfileImage();
+    getProfileImage();
     super.initState();
   }
 
-  // setImage() {
-  //   setState(() {
-  //     profileImage1 = widget.profileImage;
-  //   });
-  // }
-  // getProfileImage() async {
-  //   try {
-  //     QuerySnapshot snapshot =
-  //         await FirebaseFirestore.instance.collection('Users').get();
-  //     snapshot.docs.forEach((doc) {
-  //       if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
-  //         setState(() {
-  //           widget.profileImage = doc['ProfileImage'];
-  //         });
-  //       }
-  //     });
-  //     setState(() {
-  //       widget.profileImage != '' ? widget.ref = true : widget.ref = false;
-  //     });
-  //   } on FirebaseException catch (e) {
-  //     Fluttertoast.showToast(
-  //       msg: e.message.toString(),
-  //       toastLength: Toast.LENGTH_LONG,
-  //       gravity: ToastGravity.BOTTOM,
-  //       timeInSecForIosWeb: 3,
-  //       backgroundColor: Colors.red,
-  //       textColor: Colors.white,
-  //       fontSize: 16.0,
-  //     );
-  //   }
-  // }
+  getProfileImage() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Users').get();
+      snapshot.docs.forEach((doc) {
+        if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
+          setState(() {
+            widget.profileImage = doc['ProfileImage'];
+          });
+        }
+        setState(() {
+          widget.profileImage != '' ? widget.ref = true : widget.ref = false;
+        });
+      });
+    } on FirebaseException catch (e) {
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+    }
+  }
 
   getNotificationCount() async {
     int count = 0;
@@ -105,27 +101,75 @@ class _HomeScreenState extends State<HomeScreen> {
     print(count);
   }
 
+  // setRefunds() async {
+  //   try {
+  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+  //         .collection(
+  //           'Transactions',
+  //         )
+  //         .get();
+  //     QuerySnapshot snapshot = await FirebaseFirestore.instance
+  //         .collection(
+  //           'Transactions',
+  //         )
+  //         .where('RefundStatus', isEqualTo: 'no')
+  //         .get();
+  //     querySnapshot.docs.forEach((doc) {
+  //       if (doc['UserID'] == FirebaseAuth.instance.currentUser!.email) {
+  //         if (doc['TStatus'] == 'Failed') {
+  //           for (QueryDocumentSnapshot doc in snapshot.docs) {
+  //             doc.reference.set('yes');
+  //           }
+  //         }
+  //       }
+  //     });
+  //   } catch (e) {}
+  // }
+
   getTransactionCount() async {
     int tcount = 0;
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Transactions');
       QuerySnapshot snapshot = await reference.get();
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('Transactions')
+          .where('UserID', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+          .get();
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
-                doc['Status'] == 'unseen' &&
-                doc['TStatus'] == 'Completed' ||
-            doc['Status'] == 'unseen' && doc['TStatus'] == 'Failed') {
+            doc['Status'] == 'unseen' &&
+            doc['TStatus'] == 'Failed') {
           if (tcount != widget.transactionCount) {
             tcount++;
-            print('getting...');
           }
+          if (doc['RefundStatus'] == 'no') {
+            refund = doc['Amount'];
+            FirebaseFirestore.instance
+                .collection('Users')
+                .doc(FirebaseAuth.instance.currentUser!.email)
+                .collection('Earning')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .update({
+              'Real Money': widget.user.realMoney! + refund,
+            });
+            // setRefunds();
+            querySnapshot.docs.forEach((doc) {
+              doc.reference.update({'RefundStatus': 'yes'});
+            });
+          } else {
+            print('Done');
+          }
+          print(
+            'getting...',
+          );
         }
       });
       setState(() {
         widget.transactionCount = tcount;
       });
+
       return true;
     } catch (e) {
       print(e);
@@ -505,11 +549,18 @@ class _HomeScreenState extends State<HomeScreen> {
               //getNotificationCount();
               widget.transactionCount = 0;
               widget.temp = 0;
+              getProfileImage();
             } else if (index == 1) {
               //getNotificationCount();
               widget.temp = 1;
+              getProfileImage();
             } else if (index == 0) {
+              getData();
+              getTransactionCount();
+              getProfileImage();
               widget.temp = 0;
+            } else if (index == 3) {
+              getProfileImage();
             }
           },
         ),

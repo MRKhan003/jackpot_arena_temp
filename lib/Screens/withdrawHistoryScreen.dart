@@ -15,7 +15,7 @@ class Withdrawhistoryscreen extends StatefulWidget {
   List<String> tStatus = [];
   List<Timestamp> withdrawTimeStamps = [];
   List<String> withdrawStatus = [];
-  List<String> amount = [];
+  List<int> amount = [];
   List<String> bankIcon = [];
   bool ref = true;
   int size = 100;

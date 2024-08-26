@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:double_back_to_close_app/double_back_to_close_app.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jackpot_arena/Firebase/userController.dart';
+import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
+import 'package:jackpot_arena/Screens/homeScreen.dart';
 
 class EditProfile extends StatefulWidget {
   String? currentUser;
@@ -19,6 +22,7 @@ class EditProfile extends StatefulWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String profileImage;
   File? image;
+  int running = 0;
   final ImagePicker _picker = ImagePicker();
   EditProfile({
     required this.profileImage,
@@ -47,27 +51,30 @@ class _EditProfileState extends State<EditProfile> {
   //   });
   // }
 
-  // Future getProfileImage() async {
-  //   try {
-  //     QuerySnapshot snapshot =
-  //         await FirebaseFirestore.instance.collection('Users').get();
-  //     snapshot.docs.forEach((doc) {
-  //       if (doc['UserEmail'] == widget.currentUser) {
-  //         widget.profileImage = doc['ProfileImage'];
-  //       }
-  //     });
-  //   } on FirebaseException catch (e) {
-  //     Fluttertoast.showToast(
-  //       msg: e.message.toString(),
-  //       toastLength: Toast.LENGTH_LONG,
-  //       gravity: ToastGravity.BOTTOM,
-  //       timeInSecForIosWeb: 3,
-  //       backgroundColor: Color(0xffF8F8F8),
-  //       textColor: Colors.red,
-  //       fontSize: 16.0,
-  //     );
-  //   }
-  // }
+  getProfileImage() async {
+    try {
+      QuerySnapshot snapshot =
+          await FirebaseFirestore.instance.collection('Users').get();
+      snapshot.docs.forEach((doc) {
+        if (doc['UserEmail'] == widget.currentUser) {
+          setState(() {
+            widget.profileImage = doc['ProfileImage'];
+            widget.running = 0;
+          });
+        }
+      });
+    } on FirebaseException catch (e) {
+      Fluttertoast.showToast(
+        msg: e.message.toString(),
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 3,
+        backgroundColor: Color(0xffF8F8F8),
+        textColor: Colors.red,
+        fontSize: 16.0,
+      );
+    }
+  }
 
   getCurrentUser() async {
     try {
@@ -298,6 +305,18 @@ class _EditProfileState extends State<EditProfile> {
               widget.currentUser,
             ) // Replace with the current user's document ID
             .update({'ProfileImage': imageUrl});
+        setState(() {
+          widget.running = 1;
+        });
+        Timer(
+            Duration(
+              seconds: 1,
+            ),
+            //CircularProgressIndicator();
+            () {
+          //CircularProgressIndicator();
+          getProfileImage();
+        });
       }
     } else {
       Fluttertoast.showToast(
@@ -321,124 +340,155 @@ class _EditProfileState extends State<EditProfile> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: widget.currentDisplayName == null
-            ? Center(
-                child: CircularProgressIndicator(
-                  color: Color(
-                    0xffFF6007,
+      body: DoubleBackToCloseApp(
+        snackBar: SnackBar(
+          content: Text('Back again to leave app.'),
+        ),
+        child: SingleChildScrollView(
+          child: widget.currentDisplayName == null
+              ? Center(
+                  child: CircularProgressIndicator(
+                    color: Color(
+                      0xffFF6007,
+                    ),
                   ),
-                ),
-              )
-            : Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          _getImageFromGallery();
-                        },
-                        child: CircleAvatar(
-                          maxRadius: 72,
-                          minRadius: 52,
-                          backgroundColor: Colors.grey,
-                          child: CircleAvatar(
-                            maxRadius: 70,
-                            minRadius: 50,
-                            foregroundImage: widget.profileImage != ''
-                                ? NetworkImage(
-                                    widget.profileImage,
-                                  )
-                                : AssetImage(
-                                    'assets/dp.jpg',
-                                  ),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(
+                            profileImage: widget.profileImage,
                           ),
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          _getImageFromGallery();
-                        },
-                        child: Container(
-                          //height: 100,
-                          constraints: BoxConstraints.tight(
-                            Size.fromRadius(70),
-                          ),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Color(0xffEFCC4E),
-                              ],
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        child: Icon(
+                          Icons.arrow_circle_left_sharp,
+                          size: 36,
+                          color: Color(0xffFF6007),
+                        ),
+                      ),
+                    ),
+                    widget.running == 1
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: Color(0xffFF6007),
                             ),
-                          ),
-                          child: Container(
+                          )
+                        : Stack(
                             alignment: Alignment.bottomCenter,
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 20),
-                              child: Icon(
-                                Icons.camera_alt,
-                                color: Colors.white,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  _getImageFromGallery();
+                                  //getProfileImage();
+                                },
+                                child: CircleAvatar(
+                                  maxRadius: 72,
+                                  minRadius: 52,
+                                  backgroundColor: Colors.grey,
+                                  child: CircleAvatar(
+                                    maxRadius: 70,
+                                    minRadius: 50,
+                                    foregroundImage: widget.profileImage != ''
+                                        ? NetworkImage(
+                                            widget.profileImage,
+                                          )
+                                        : AssetImage(
+                                            'assets/dp.jpg',
+                                          ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              GestureDetector(
+                                onTap: () {
+                                  _getImageFromGallery();
+                                },
+                                child: Container(
+                                  //height: 100,
+                                  constraints: BoxConstraints.tight(
+                                    Size.fromRadius(70),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        Colors.transparent,
+                                        Color(0xffFF6007),
+                                      ],
+                                    ),
+                                  ),
+                                  child: Container(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 20),
+                                      child: Icon(
+                                        Icons.camera_alt,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextFormField(
-                      initialValue: widget.currentUserName!,
-                      onChanged: (value) => setState(() {
-                        widget.newUserName = value;
-                      }),
-                      decoration: InputDecoration(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextFormField(
-                      initialValue: widget.currentEmail!,
-                      onChanged: (value) => setState(() {
-                        widget.newEmail = value;
-                      }),
-                      //controller: widget.controller.emailController,
-                      decoration: InputDecoration(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: TextFormField(
-                      initialValue: widget.currentDisplayName!,
-                      onChanged: (value) => setState(() {
-                        widget.newDisplayName = value;
-                      }),
-                      decoration: InputDecoration(),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _updateProfile(
-                          widget.newUserName,
-                          widget.newEmail,
-                          widget.newDisplayName,
-                        );
-                      },
-                      child: Text(
-                        'Save',
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextFormField(
+                        initialValue: widget.currentUserName!,
+                        onChanged: (value) => setState(() {
+                          widget.newUserName = value;
+                        }),
+                        decoration: InputDecoration(),
                       ),
                     ),
-                  ),
-                ],
-              ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextFormField(
+                        initialValue: widget.currentEmail!,
+                        onChanged: (value) => setState(() {
+                          widget.newEmail = value;
+                        }),
+                        //controller: widget.controller.emailController,
+                        decoration: InputDecoration(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: TextFormField(
+                        initialValue: widget.currentDisplayName!,
+                        onChanged: (value) => setState(() {
+                          widget.newDisplayName = value;
+                        }),
+                        decoration: InputDecoration(),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _updateProfile(
+                            widget.newUserName,
+                            widget.newEmail,
+                            widget.newDisplayName,
+                          );
+                        },
+                        child: Text(
+                          'Save',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }

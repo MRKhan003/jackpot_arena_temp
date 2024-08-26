@@ -37,9 +37,11 @@ class _ProfilescreenState extends State<Profilescreen> {
         if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
           setState(() {
             widget.profileImage = doc['ProfileImage'];
-            widget.profileImage != '' ? widget.ref = true : widget.ref = false;
           });
         }
+        setState(() {
+          widget.profileImage != '' ? widget.ref = true : widget.ref = false;
+        });
       });
     } on FirebaseException catch (e) {
       Fluttertoast.showToast(
@@ -80,7 +82,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                             widget.profileImage,
                           )
                         : AssetImage(
-                            'assets/Logo2.png',
+                            'assets/dp.jpg',
                           ),
                   ),
                 ),
@@ -89,7 +91,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditProfile(

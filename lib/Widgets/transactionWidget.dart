@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class Transactionwidget extends StatelessWidget {
-  String bankName, bankIcon, amount, successful, status;
-
+  String bankName, bankIcon, successful, status;
+  int amount;
   Timestamp time;
   Transactionwidget({
     required this.bankName,
@@ -91,7 +91,7 @@ class Transactionwidget extends StatelessWidget {
                     Container(
                       alignment: Alignment.topLeft,
                       child: Text(
-                        amount,
+                        amount.toString(),
                         style: GoogleFonts.poppins(
                           fontSize: 14,
                           color: successful == 'Completed'

@@ -105,7 +105,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
     }
   }
 
-  setTransactionData(String bankName, String accountNumber, String amount,
+  setTransactionData(String bankName, String accountNumber, int amount,
       String displayName, String bankIcon) async {
     try {
       await FirebaseFirestore.instance
@@ -123,6 +123,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         'UserID': widget.userDetails.email,
         'Display Name': displayName,
         'Bank Icon': bankIcon,
+        'RefundStatus': ''
       });
       Fluttertoast.showToast(
         msg: 'Request Sent',
@@ -321,7 +322,8 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                   setTransactionData(
                     widget.bankName,
                     widget.transactioncontroller.accountNumberController.text,
-                    widget.transactioncontroller.amountController.text,
+                    int.parse(
+                        widget.transactioncontroller.amountController.text),
                     widget.transactioncontroller.nameController.text,
                     widget.bankIcon,
                   );
