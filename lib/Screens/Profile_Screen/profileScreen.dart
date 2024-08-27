@@ -90,6 +90,11 @@ class _ProfilescreenState extends State<Profilescreen> {
                   height: 15,
                 ),
                 ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStatePropertyAll(
+                      Color(0xffEFCC4E),
+                    ),
+                  ),
                   onPressed: () {
                     Navigator.pushReplacement(
                       context,
@@ -105,7 +110,7 @@ class _ProfilescreenState extends State<Profilescreen> {
                   child: Text(
                     'Edit Profile',
                     style: GoogleFonts.poppins(
-                      color: Color(0xffEFCC4E),
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -163,7 +168,9 @@ class _ProfilescreenState extends State<Profilescreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: RoundedLoadingButton(
-                color: Colors.red,
+                color: Color(
+                  0xffEFCC4E,
+                ),
                 controller: widget.buttonController,
                 onPressed: () {
                   Firebasefunctions().logout(context);

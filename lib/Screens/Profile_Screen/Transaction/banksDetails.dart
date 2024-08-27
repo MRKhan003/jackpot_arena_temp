@@ -38,6 +38,7 @@ class _BanksdetailsState extends State<Banksdetails> {
       setState(() {
         widget.size = widget.bankNames.length;
       });
+      print(widget.bankNames);
     } on FirebaseException catch (e) {
       print(e.message);
     }
@@ -52,54 +53,52 @@ class _BanksdetailsState extends State<Banksdetails> {
         backgroundColor: Colors.white,
         surfaceTintColor: Colors.white,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 8,
-                top: 8,
-              ),
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Banks and Wallets',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 8,
+              top: 8,
+            ),
+            child: Container(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Banks and Wallets',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
               ),
             ),
-            widget.bankNames.isEmpty
-                ? CircularProgressIndicator(
-                    color: Color(
-                      0xffFF6007,
-                    ),
-                  )
-                : SizedBox(
-                    height: 1500,
-                    child: ListView.builder(
-                      itemCount: widget.bankNames.length,
-                      itemBuilder: (context, index) => GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Transactiondetails(
-                              bankName: widget.bankNames[index],
-                              bankIcon: widget.bankLogos[index],
-                            ),
+          ),
+          widget.bankNames.isEmpty
+              ? CircularProgressIndicator(
+                  color: Color(
+                    0xffEFCC4E,
+                  ),
+                )
+              : Expanded(
+                  child: ListView.builder(
+                    scrollDirection: Axis.vertical,
+                    itemCount: widget.bankNames.length,
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Transactiondetails(
+                            bankName: widget.bankNames[index],
+                            bankIcon: widget.bankLogos[index],
                           ),
                         ),
-                        child: Bankdetailswidget(
-                          widgetContext: widget.bankNames[index],
-                          widgetImage: widget.bankLogos[index],
-                        ),
+                      ),
+                      child: Bankdetailswidget(
+                        widgetContext: widget.bankNames[index],
+                        widgetImage: widget.bankLogos[index],
                       ),
                     ),
                   ),
-          ],
-        ),
+                ),
+        ],
       ),
     );
   }

@@ -15,6 +15,7 @@ class Notificationscreen extends StatefulWidget {
   static bool isTapped = false;
   int notificationCount = 100;
   bool ref = true;
+  int running = 0;
   Notificationscreen({super.key});
   @override
   State<Notificationscreen> createState() => _NotificationscreenState();
@@ -85,6 +86,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.message.length;
         widget.message.isNotEmpty ? widget.ref = true : widget.ref = false;
+        widget.running = 1;
       });
       return true;
     } on FirebaseException catch (e) {
@@ -132,83 +134,84 @@ class _NotificationscreenState extends State<Notificationscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 8,
-                top: 8,
-              ),
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Notifications',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 8,
+              top: 8,
+            ),
+            child: Container(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Notifications',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
               ),
             ),
-            widget.ref == false
-                ? SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: Text(
-                        'No Notifications!',
-                        textAlign: TextAlign.end,
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          //fontWeight: FontWeight.bold,
-                          color: Colors.grey,
+          ),
+          widget.running == 0
+              ? CircularProgressIndicator(
+                  color: Color(0xffEFCC4E),
+                )
+              : widget.ref == false
+                  ? SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: Text(
+                          'No Notifications!',
+                          textAlign: TextAlign.end,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            //fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                : SizedBox(
-                    height: 1500,
-                    child: ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      itemCount: widget.message.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            left: 10,
-                            right: 10,
-                            top: 10,
-                          ),
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                Notificationscreen.isTapped == true;
-                              });
-                              setData(
-                                widget.message[index],
-                              );
-
-                              print('tapped...');
-                            },
-                            child: NotificationWidget(
-                              secondaryColor: Colors.white,
-                              //contextIcon2: Icons.mark_email_read_outlined,
-                              imageURL: widget.image[index],
-                              contextText: widget.message[index],
-                              status: widget.status[index],
-                              isOpened: Notificationscreen.isTapped,
-                              contextIcon: widget.status[index] == 'unseen'
-                                  ? Icons.email_outlined
-                                  : Icons.mark_email_read_outlined,
-                              time: widget.timeStamps[index],
-                              amount: null,
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: widget.message.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
                             ),
-                          ),
-                        );
-                      },
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  Notificationscreen.isTapped == true;
+                                });
+                                setData(
+                                  widget.message[index],
+                                );
+
+                                print('tapped...');
+                              },
+                              child: NotificationWidget(
+                                secondaryColor: Colors.white,
+                                //contextIcon2: Icons.mark_email_read_outlined,
+                                imageURL: widget.image[index],
+                                contextText: widget.message[index],
+                                status: widget.status[index],
+                                isOpened: Notificationscreen.isTapped,
+                                contextIcon: widget.status[index] == 'unseen'
+                                    ? Icons.email_outlined
+                                    : Icons.mark_email_read_outlined,
+                                time: widget.timeStamps[index],
+                                amount: null,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
-                  ),
-          ],
-        ),
+        ],
       ),
     );
   }

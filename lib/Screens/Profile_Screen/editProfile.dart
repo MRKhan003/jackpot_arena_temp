@@ -7,9 +7,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jackpot_arena/Firebase/userController.dart';
-import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
 
 class EditProfile extends StatefulWidget {
@@ -35,21 +35,10 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   @override
   void initState() {
-    //loadValues();
     getCurrentUser();
     getData();
-    // getProfileImage();
     super.initState();
   }
-
-  // loadValues() {
-  //   Timer(Duration(seconds: 5), () {
-  //     CircularProgressIndicator();
-  //     getCurrentUser();
-  //     getData();
-  //     //getProfileImage();
-  //   });
-  // }
 
   getProfileImage() async {
     try {
@@ -266,7 +255,19 @@ class _EditProfileState extends State<EditProfile> {
         widget.image = File(pickedFile.path);
       });
     }
+    setState(() {
+      widget.running = 1;
+    });
     _updateProfileImage();
+  }
+
+  void deleteImage() async {
+    try {
+      final fileName = widget.profileImage;
+      await widget._storage.ref().child(fileName).delete();
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<String?> _uploadImage(File image) async {
@@ -299,23 +300,16 @@ class _EditProfileState extends State<EditProfile> {
       final imageUrl = await _uploadImage(widget.image!);
       if (imageUrl != null) {
         // Update the user's Firestore document with the image URL
+        //deleteImage();
         await widget._firestore
             .collection('Users')
             .doc(
               widget.currentUser,
             ) // Replace with the current user's document ID
             .update({'ProfileImage': imageUrl});
+        getProfileImage();
         setState(() {
-          widget.running = 1;
-        });
-        Timer(
-            Duration(
-              seconds: 1,
-            ),
-            //CircularProgressIndicator();
-            () {
-          //CircularProgressIndicator();
-          getProfileImage();
+          widget.running = 0;
         });
       }
     } else {
@@ -334,11 +328,11 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: widget.running == 0 ? Colors.white : Colors.grey,
       appBar: AppBar(
         toolbarHeight: 70,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
+        backgroundColor: widget.running == 0 ? Colors.white : Colors.grey,
+        surfaceTintColor: widget.running == 0 ? Colors.white : Colors.grey,
       ),
       body: DoubleBackToCloseApp(
         snackBar: SnackBar(
@@ -349,144 +343,264 @@ class _EditProfileState extends State<EditProfile> {
               ? Center(
                   child: CircularProgressIndicator(
                     color: Color(
-                      0xffFF6007,
+                      0xffEFCC4E,
                     ),
                   ),
                 )
-              : Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => HomeScreen(
-                            profileImage: widget.profileImage,
+              : AbsorbPointer(
+                  absorbing: widget.running == 1 ? true : false,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                              profileImage: widget.profileImage,
+                            ),
+                          ),
+                        ),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Icon(
+                            Icons.arrow_circle_left_sharp,
+                            size: 36,
+                            color: Color(0xffEFCC4E),
                           ),
                         ),
                       ),
-                      child: Container(
-                        alignment: Alignment.topLeft,
-                        child: Icon(
-                          Icons.arrow_circle_left_sharp,
-                          size: 36,
-                          color: Color(0xffFF6007),
-                        ),
-                      ),
-                    ),
-                    widget.running == 1
-                        ? Center(
-                            child: CircularProgressIndicator(
-                              color: Color(0xffFF6007),
-                            ),
-                          )
-                        : Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              GestureDetector(
-                                onTap: () {
-                                  _getImageFromGallery();
-                                  //getProfileImage();
-                                },
-                                child: CircleAvatar(
-                                  maxRadius: 72,
-                                  minRadius: 52,
-                                  backgroundColor: Colors.grey,
-                                  child: CircleAvatar(
-                                    maxRadius: 70,
-                                    minRadius: 50,
-                                    foregroundImage: widget.profileImage != ''
-                                        ? NetworkImage(
-                                            widget.profileImage,
-                                          )
-                                        : AssetImage(
-                                            'assets/dp.jpg',
-                                          ),
-                                  ),
-                                ),
+                      widget.running == 1
+                          ? Center(
+                              child: CircularProgressIndicator(
+                                color: Color(0xffEFCC4E),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  _getImageFromGallery();
-                                },
-                                child: Container(
-                                  //height: 100,
-                                  constraints: BoxConstraints.tight(
-                                    Size.fromRadius(70),
-                                  ),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    gradient: LinearGradient(
-                                      begin: Alignment.topCenter,
-                                      end: Alignment.bottomCenter,
-                                      colors: [
-                                        Colors.transparent,
-                                        Color(0xffFF6007),
-                                      ],
+                            )
+                          : Stack(
+                              alignment: Alignment.bottomCenter,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    _getImageFromGallery();
+                                    //getProfileImage();
+                                  },
+                                  child: CircleAvatar(
+                                    maxRadius: 72,
+                                    minRadius: 52,
+                                    backgroundColor: Colors.grey,
+                                    child: CircleAvatar(
+                                      maxRadius: 70,
+                                      minRadius: 50,
+                                      foregroundImage: widget.profileImage != ''
+                                          ? NetworkImage(
+                                              widget.profileImage,
+                                            )
+                                          : AssetImage(
+                                              'assets/dp.jpg',
+                                            ),
                                     ),
                                   ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    _getImageFromGallery();
+                                  },
                                   child: Container(
-                                    alignment: Alignment.bottomCenter,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 20),
-                                      child: Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
+                                    //height: 100,
+                                    constraints: BoxConstraints.tight(
+                                      Size.fromRadius(70),
+                                    ),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Color(0xffEFCC4E),
+                                        ],
+                                      ),
+                                    ),
+                                    child: Container(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 20),
+                                        child: Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              )
-                            ],
+                                )
+                              ],
+                            ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 12,
+                        ),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Username',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        initialValue: widget.currentUserName!,
-                        onChanged: (value) => setState(() {
-                          widget.newUserName = value;
-                        }),
-                        decoration: InputDecoration(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        initialValue: widget.currentEmail!,
-                        onChanged: (value) => setState(() {
-                          widget.newEmail = value;
-                        }),
-                        //controller: widget.controller.emailController,
-                        decoration: InputDecoration(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: TextFormField(
-                        initialValue: widget.currentDisplayName!,
-                        onChanged: (value) => setState(() {
-                          widget.newDisplayName = value;
-                        }),
-                        decoration: InputDecoration(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          _updateProfile(
-                            widget.newUserName,
-                            widget.newEmail,
-                            widget.newDisplayName,
-                          );
-                        },
-                        child: Text(
-                          'Save',
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          initialValue: widget.currentUserName!,
+                          onChanged: (value) => setState(() {
+                            widget.newUserName = value;
+                          }),
+                          decoration: InputDecoration(
+                            fillColor: Colors.black,
+                            focusColor: Color(0xffEFCC4E),
+                            hoverColor: Color(0xffEFCC4E),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                              borderSide: BorderSide(
+                                color: Color(0xffEFCC4E),
+                              ),
+                            ),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 12,
+                        ),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Email',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          initialValue: widget.currentEmail!,
+                          onChanged: (value) => setState(() {
+                            widget.newEmail = value;
+                          }),
+
+                          //controller: widget.controller.emailController,
+                          decoration: InputDecoration(
+                            fillColor: Colors.black,
+                            focusColor: Color(0xffEFCC4E),
+                            hoverColor: Color(0xffEFCC4E),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                              borderSide: BorderSide(
+                                color: Color(0xffEFCC4E),
+                              ),
+                            ),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: 12,
+                        ),
+                        child: Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            'Display Name',
+                            textAlign: TextAlign.left,
+                            style: GoogleFonts.poppins(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: TextFormField(
+                          initialValue: widget.currentDisplayName!,
+                          onChanged: (value) => setState(() {
+                            widget.newDisplayName = value;
+                          }),
+                          decoration: InputDecoration(
+                            fillColor: Colors.black,
+                            focusColor: Color(0xffEFCC4E),
+                            hoverColor: Color(0xffEFCC4E),
+                            focusedBorder: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                              borderSide: BorderSide(
+                                color: Color(0xffEFCC4E),
+                              ),
+                            ),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(
+                                  10,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Color(0xffEFCC4E),
+                            ),
+                          ),
+                          onPressed: () {
+                            _updateProfile(
+                              widget.newUserName,
+                              widget.newEmail,
+                              widget.newDisplayName,
+                            );
+                          },
+                          child: Text(
+                            'Save',
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
         ),
       ),

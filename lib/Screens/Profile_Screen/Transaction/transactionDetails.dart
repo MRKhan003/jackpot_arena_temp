@@ -12,6 +12,7 @@ class Transactiondetails extends StatefulWidget {
   UserDetails userDetails = UserDetails();
   Transactioncontroller transactioncontroller = Transactioncontroller();
   int userAmount = 0;
+  int checking = 0;
   bool? validate;
   bool? accountValueValidate;
   bool? displayValueValidate;
@@ -26,6 +27,7 @@ class Transactiondetails extends StatefulWidget {
 }
 
 class _TransactiondetailsState extends State<Transactiondetails> {
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -123,7 +125,8 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         'UserID': widget.userDetails.email,
         'Display Name': displayName,
         'Bank Icon': bankIcon,
-        'RefundStatus': ''
+        'RefundStatus': '',
+        'Reason': '',
       });
       Fluttertoast.showToast(
         msg: 'Request Sent',
@@ -166,7 +169,10 @@ class _TransactiondetailsState extends State<Transactiondetails> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Form(
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                autovalidateMode: widget.checking == 0
+                    ? AutovalidateMode.onUserInteraction
+                    : AutovalidateMode.disabled,
+                key: _formKey,
                 child: Column(
                   children: [
                     TextFormField(
@@ -268,6 +274,8 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                           setState(() {
                             widget.amountValueValidate = false;
                           });
+                        } else if (amountValue == "0") {
+                          widget.amountValueValidate = false;
                         } else {
                           setState(() {
                             widget.amountValueValidate = true;
@@ -286,10 +294,16 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                         if (amountValue!.isEmpty &&
                             widget.amountValueValidate == false) {
                           return 'Please enter a valid amount';
+                        } else if (amountValue == '0' &&
+                            widget.amountValueValidate == false) {
+                          return 'Please select a amount between 1 - ${widget.userDetails.realMoney}';
                         }
 
                         // Additional validation if needed
                         return null; // Return null if validation passes
+                      },
+                      onFieldSubmitted: (amountValue) {
+                        amountValue = '';
                       },
                     ),
                   ],
@@ -313,6 +327,10 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                         int.parse(
                           widget.transactioncontroller.amountController.text,
                         ) &&
+                    int.parse(
+                          widget.transactioncontroller.amountController.text,
+                        ) !=
+                        0 &&
                     widget.transactioncontroller.accountNumberController.text
                             .length >=
                         11 &&
@@ -327,6 +345,14 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                     widget.transactioncontroller.nameController.text,
                     widget.bankIcon,
                   );
+                  widget.transactioncontroller.nameController.clear();
+                  widget.transactioncontroller.accountNumberController.clear();
+                  widget.transactioncontroller.amountController.clear();
+                  setState(() {
+                    widget.checking = 1;
+                  });
+                  //_formKey.currentState!.reset();
+                  //widget.transactioncontroller.accountNumberController == 0;
                 } else {
                   Fluttertoast.showToast(
                     msg: 'Recheck your information and try again!',

@@ -416,7 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: EdgeInsets.only(top: 5, right: 10),
                   child: GestureDetector(
-                    onTap: () => Navigator.push(
+                    onTap: () => Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
                         builder: (context) => EditProfile(
@@ -550,10 +550,12 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.transactionCount = 0;
               widget.temp = 0;
               getProfileImage();
+              getData();
             } else if (index == 1) {
               //getNotificationCount();
               widget.temp = 1;
               getProfileImage();
+              getData();
             } else if (index == 0) {
               getData();
               getTransactionCount();
@@ -561,6 +563,7 @@ class _HomeScreenState extends State<HomeScreen> {
               widget.temp = 0;
             } else if (index == 3) {
               getProfileImage();
+              getData();
             }
           },
         ),

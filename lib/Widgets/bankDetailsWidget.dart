@@ -12,7 +12,11 @@ class Bankdetailswidget extends StatelessWidget {
       color: Colors.white,
       width: double.infinity,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.only(
+          top: 8,
+          left: 8,
+          right: 8,
+        ),
         child: Row(
           children: [
             CircleAvatar(

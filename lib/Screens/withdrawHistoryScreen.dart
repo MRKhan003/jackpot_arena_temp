@@ -17,9 +17,12 @@ class Withdrawhistoryscreen extends StatefulWidget {
   List<String> withdrawStatus = [];
   List<int> amount = [];
   List<String> bankIcon = [];
+  List<String> summary = [];
   bool ref = true;
   int size = 100;
+  List<String> getLength = [];
   String? currentUser;
+  int running = 0;
   Withdrawhistoryscreen({super.key});
   @override
   State<Withdrawhistoryscreen> createState() => _WithdrawhistoryscreenState();
@@ -30,8 +33,53 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   void initState() {
     getData();
     _getTransactionData();
+    getLength();
     setData();
     super.initState();
+  }
+
+  ScrollController scrollController = ScrollController();
+  showDialogBox(String failedText) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          scrollable: true,
+          alignment: Alignment.center,
+          backgroundColor: Colors.red,
+          shape: BeveledRectangleBorder(),
+          title: Text(
+            'Transaction Failure Reason',
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              color: Colors.white,
+            ),
+          ),
+          content: Text(
+            failedText,
+            textAlign: TextAlign.left,
+            style: GoogleFonts.poppins(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(context, 'Cancel');
+              },
+              child: Text(
+                'Continue',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   getData() async {
@@ -70,6 +118,28 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
     } catch (e) {}
   }
 
+  getLength() async {
+    setState(() {
+      widget.getLength = [];
+    });
+
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('Transactions').get();
+      querySnapshot.docs.forEach((doc) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+          setState(() {
+            widget.getLength.add(
+              doc['Bank'],
+            );
+          });
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
   _getTransactionData() async {
     try {
       CollectionReference reference =
@@ -79,7 +149,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
-          if (widget.size != widget.withdrawMessage.length) {
+          if (widget.withdrawMessage.length != widget.size) {
             setState(() {
               widget.amount.add(doc['Amount']);
               widget.withdrawMessage.add(doc['Bank']);
@@ -87,6 +157,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
               widget.tStatus.add(doc['TStatus']);
               widget.withdrawTimeStamps.add(doc['Time']);
               widget.bankIcon.add(doc['Bank Icon']);
+              widget.summary.add(doc['Reason']);
               print('completed');
             });
             print(widget.amount);
@@ -94,16 +165,18 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
             print(widget.withdrawMessage);
             print(widget.withdrawTimeStamps);
             print(widget.bankIcon);
+            print(widget.summary);
             //print(widget.success);
           }
         }
       });
       setState(() {
         widget.currentUser = FirebaseAuth.instance.currentUser!.email;
-        widget.size = widget.withdrawMessage.length;
+        widget.size = widget.bankIcon.length;
         widget.withdrawMessage.isNotEmpty
             ? widget.ref = true
             : widget.ref = false;
+        widget.running = 1;
       });
       return true;
     } on FirebaseException catch (e) {
@@ -114,155 +187,168 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   }
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 10,
-                right: 10,
-                left: 10,
-              ),
-              child: Container(
-                color: Color(0xffF5F5F5),
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'You have balance',
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+              top: 10,
+              right: 10,
+              left: 10,
+            ),
+            child: Container(
+              color: Color(0xffF5F5F5),
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'You have balance',
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
+                        ),
+                        Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            widget.user.realMoney != null
+                                ? 'Rs. ' + widget.user.realMoney.toString()
+                                : '0',
                             style: GoogleFonts.poppins(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
+                                fontSize: 18,
+                                color: Color(0xff54B02F),
+                                fontWeight: FontWeight.bold),
                           ),
-                          Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              widget.user.realMoney != null
-                                  ? 'Rs. ' + widget.user.realMoney.toString()
-                                  : '0',
-                              style: GoogleFonts.poppins(
-                                  fontSize: 18,
-                                  color: Color(0xff54B02F),
-                                  fontWeight: FontWeight.bold),
-                            ),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Banksdetails(),
                           ),
-                        ],
-                      ),
-                      Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Banksdetails(),
+                        ),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
                             ),
+                            color: Color(0xffECB607),
                           ),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(10),
-                              ),
-                              color: Color(0xffECB607),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    'Widthdraw',
-                                    style: GoogleFonts.poppins(
-                                      fontSize: 12,
-                                      color: Colors.black,
-                                    ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Widthdraw',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 12,
+                                    color: Colors.black,
                                   ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Image.asset(
-                                    'assets/Icon1.png',
-                                    height: 25,
-                                  ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Image.asset(
+                                  'assets/Icon1.png',
+                                  height: 25,
+                                ),
+                              ],
                             ),
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 8,
-                top: 8,
-              ),
-              child: Container(
-                alignment: Alignment.topLeft,
-                child: Text(
-                  'Transaction',
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 8,
+              top: 8,
+            ),
+            child: Container(
+              alignment: Alignment.topLeft,
+              child: Text(
+                'Transaction',
+                style: GoogleFonts.poppins(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
               ),
             ),
-            //CircularProgressIndicator().,
-            widget.ref == false
-                ? Center(
-                    child: Text(
-                      'No Transaction Record!',
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+          ),
+          widget.running == 0
+              ? CircularProgressIndicator(
+                  color: Color(0xffEFCC4E),
+                )
+              : widget.ref == false
+                  ? Center(
+                      child: Text(
+                        //gettingData(),
+                        'No Transaction Record!',
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.poppins(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        itemCount: widget.tStatus.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              left: 10,
+                              right: 10,
+                              top: 10,
+                            ),
+                            child: GestureDetector(
+                              onTap: () => setState(() {
+                                widget.isTapped = true;
+                                widget.tStatus[index] == 'Failed' ||
+                                        widget.tStatus[index] == 'failed'
+                                    ? showDialogBox(
+                                        widget.summary[index],
+                                      )
+                                    : null;
+                              }),
+                              child: Transactionwidget(
+                                bankName: widget.withdrawMessage[index],
+                                bankIcon: widget.bankIcon[index],
+                                status: widget.withdrawStatus[index],
+                                successful: widget.tStatus[index],
+                                amount: widget.amount[index],
+                                time: widget.withdrawTimeStamps[index],
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
-                  )
-                : SizedBox(
-                    height: 600,
-                    child: ListView.builder(
-                      //scrollDirection: Axis.vertical,
-                      itemCount: widget.tStatus.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(
-                            left: 10,
-                            right: 10,
-                            top: 10,
-                          ),
-                          child: GestureDetector(
-                            onTap: () => setState(() {
-                              widget.isTapped = true;
-                            }),
-                            child: Transactionwidget(
-                              bankName: widget.withdrawMessage[index],
-                              bankIcon: widget.bankIcon[index],
-                              status: widget.withdrawStatus[index],
-                              successful: widget.tStatus[index],
-                              amount: widget.amount[index],
-                              time: widget.withdrawTimeStamps[index],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-          ],
-        ),
+        ],
       ),
     );
   }

@@ -76,17 +76,17 @@ class _SettingsSectionState extends State<SettingsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Color(0xffF8F8F8),
+        backgroundColor: Color(0xffEFCC4E),
         title: Text(
           'Confirm account delete!',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         content: Text(
           'Enter your email to delete account',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         contentPadding: EdgeInsets.fromLTRB(
@@ -119,7 +119,12 @@ class _SettingsSectionState extends State<SettingsSection> {
                         fontSize: 16.0,
                       );
               },
-              child: Text('Confirm'),
+              child: Text(
+                'Confirm',
+                style: GoogleFonts.poppins(
+                  color: Color(0xffEFCC4E),
+                ),
+              ),
             ),
           ),
         ],
@@ -131,17 +136,17 @@ class _SettingsSectionState extends State<SettingsSection> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: Color(0xffF8F8F8),
+        backgroundColor: Color(0xffEFCC4E),
         title: Text(
           'Password Update',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         content: Text(
           'Fill the fields below',
           style: GoogleFonts.poppins(
-            color: Colors.black,
+            color: Colors.white,
           ),
         ),
         contentPadding: EdgeInsets.fromLTRB(
@@ -157,6 +162,9 @@ class _SettingsSectionState extends State<SettingsSection> {
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'Email',
+              labelStyle: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
           TextField(
@@ -165,6 +173,9 @@ class _SettingsSectionState extends State<SettingsSection> {
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'Current Password',
+              labelStyle: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
           TextField(
@@ -173,6 +184,9 @@ class _SettingsSectionState extends State<SettingsSection> {
             decoration: InputDecoration(
               floatingLabelBehavior: FloatingLabelBehavior.always,
               labelText: 'New Password',
+              labelStyle: TextStyle(
+                color: Colors.white,
+              ),
             ),
           ),
           SizedBox(
@@ -203,7 +217,12 @@ class _SettingsSectionState extends State<SettingsSection> {
                   );
                 }
               },
-              child: Text('Confirm'),
+              child: Text(
+                'Confirm',
+                style: GoogleFonts.poppins(
+                  color: Color(0xffEFCC4E),
+                ),
+              ),
             ),
           ),
         ],
