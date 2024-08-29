@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Controllers/transactionController.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
 
@@ -176,14 +177,29 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                 child: Column(
                   children: [
                     TextFormField(
+                      cursorColor: Colors.black26,
                       initialValue: widget.bankName,
                       readOnly: true,
                       decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
                         labelText: 'Bank Name',
+                        floatingLabelStyle: TextStyle(
+                          color: Color(0xffEFCC4E),
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                     ),
                     TextFormField(
+                      cursorColor: Colors.black26,
                       onChanged: (accountValue) {
                         if (accountValue.isEmpty) {
                           setState(() {
@@ -204,16 +220,32 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       keyboardType: TextInputType.name,
                       readOnly: false,
                       decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
                         labelText: 'Account Number/Mobile Number',
+                        floatingLabelStyle: TextStyle(
+                          color: Color(0xffEFCC4E),
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                         //errorMaxLines: 14,
                       ),
                       maxLength: widget.bankName == 'Jazz Cash' ||
                               widget.bankName == 'NayaPay' ||
                               widget.bankName == 'SadaPay' ||
-                              widget.bankName == 'EasyPaisa'
+                              widget.bankName == 'EasyPaisa' ||
+                              widget.bankName == 'Upaisa'
                           ? 11
-                          : 14,
+                          : widget.bankName == 'JS Bank'
+                              ? 4
+                              : 14,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
                       // Set maximum length to 14 digits
                       validator: (accountValue) {
@@ -227,8 +259,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                           if (widget.bankName == 'Jazz Cash' ||
                               widget.bankName == 'NayaPay' ||
                               widget.bankName == 'SadaPay' ||
-                              widget.bankName == 'EasyPaisa') {
+                              widget.bankName == 'EasyPaisa' ||
+                              widget.bankName == 'Upaisa') {
                             return 'Account number should be of 11 digits';
+                          } else if (widget.bankName == 'JS Bank') {
+                            return 'Account number should be of 4 digits';
                           } else
                             return 'Account number should be between of 14 digits';
                         }
@@ -237,6 +272,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       },
                     ),
                     TextFormField(
+                      cursorColor: Colors.black26,
                       onChanged: (displayValue) {
                         if (displayValue.isEmpty) {
                           setState(() {
@@ -255,7 +291,20 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       ),
                       readOnly: false,
                       decoration: InputDecoration(
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
                         labelText: 'Display Name',
+                        floatingLabelStyle: TextStyle(
+                          color: Color(0xffEFCC4E),
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                       validator: (displayValue) {
@@ -269,6 +318,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       },
                     ),
                     TextFormField(
+                      cursorColor: Colors.black26,
                       onChanged: (amountValue) {
                         if (amountValue.isEmpty) {
                           setState(() {
@@ -287,7 +337,21 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       keyboardType: TextInputType.number,
                       readOnly: false,
                       decoration: InputDecoration(
+                        //hoverColor: Color(0xffEFCC4E),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xffEFCC4E),
+                          ),
+                        ),
                         labelText: 'Amount',
+                        floatingLabelStyle: TextStyle(
+                          color: Color(0xffEFCC4E),
+                        ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
                       validator: (amountValue) {
@@ -311,6 +375,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
               ),
             ),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStatePropertyAll(
+                  Color(0xffEFCC4E),
+                ),
+              ),
               onPressed: () {
                 print(
                   int.parse(
@@ -365,7 +434,12 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                   );
                 }
               },
-              child: Text('Submit'),
+              child: Text(
+                'Submit',
+                style: GoogleFonts.poppins(
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),

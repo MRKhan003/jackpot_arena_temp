@@ -272,7 +272,7 @@ class _EditProfileState extends State<EditProfile> {
 
   Future<String?> _uploadImage(File image) async {
     try {
-      final fileName = 'ProfileImage/${DateTime.now().millisecondsSinceEpoch}';
+      final fileName = 'ProfileImage/${FirebaseAuth.instance.currentUser!.uid}';
 
       final ref = widget._storage.ref().child(fileName);
 
@@ -313,6 +313,9 @@ class _EditProfileState extends State<EditProfile> {
         });
       }
     } else {
+      setState(() {
+        widget.running = 0;
+      });
       Fluttertoast.showToast(
         msg: "Please select an image",
         toastLength: Toast.LENGTH_LONG,
@@ -447,6 +450,7 @@ class _EditProfileState extends State<EditProfile> {
                             textAlign: TextAlign.left,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold,
+                              color: Color(0xffEFCC4E),
                             ),
                           ),
                         ),
@@ -454,6 +458,7 @@ class _EditProfileState extends State<EditProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextFormField(
+                          cursorColor: Colors.black26,
                           initialValue: widget.currentUserName!,
                           onChanged: (value) => setState(() {
                             widget.newUserName = value;
@@ -493,6 +498,7 @@ class _EditProfileState extends State<EditProfile> {
                             textAlign: TextAlign.left,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold,
+                              color: Color(0xffEFCC4E),
                             ),
                           ),
                         ),
@@ -500,6 +506,7 @@ class _EditProfileState extends State<EditProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextFormField(
+                          cursorColor: Colors.black26,
                           initialValue: widget.currentEmail!,
                           onChanged: (value) => setState(() {
                             widget.newEmail = value;
@@ -541,6 +548,7 @@ class _EditProfileState extends State<EditProfile> {
                             textAlign: TextAlign.left,
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.bold,
+                              color: Color(0xffEFCC4E),
                             ),
                           ),
                         ),
@@ -548,6 +556,7 @@ class _EditProfileState extends State<EditProfile> {
                       Padding(
                         padding: const EdgeInsets.all(12.0),
                         child: TextFormField(
+                          cursorColor: Colors.black26,
                           initialValue: widget.currentDisplayName!,
                           onChanged: (value) => setState(() {
                             widget.newDisplayName = value;

@@ -63,6 +63,7 @@ dependencies:
   circular_profile_avatar:
   firebase_storage:
   firebase_app_check:
+  animated_search_bar:
 
 dev_dependencies:
   flutter_test:

@@ -181,6 +181,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
                               left: 10,
                               right: 10,
                               top: 10,
+                              bottom: 10,
                             ),
                             child: GestureDetector(
                               onTap: () {

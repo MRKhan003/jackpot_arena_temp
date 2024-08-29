@@ -62,6 +62,7 @@ class _ProfilescreenState extends State<Profilescreen> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -117,18 +118,18 @@ class _ProfilescreenState extends State<Profilescreen> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Banksdetails(),
+              padding: const EdgeInsets.only(
+                left: 18,
+              ),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Account',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffEFCC4E),
+                    fontSize: 16,
                   ),
-                ),
-                child: Profilescreenwidget(
-                  widgetContext: 'Withdraw Amount',
-                  widgetIcon: Icons.money,
-                  widgetColor: Colors.white,
                 ),
               ),
             ),
@@ -145,6 +146,54 @@ class _ProfilescreenState extends State<Profilescreen> {
                   widgetContext: 'Settings',
                   widgetIcon: Icons.settings,
                   widgetColor: Colors.white,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 18,
+              ),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Actions',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffEFCC4E),
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => Banksdetails(),
+                  ),
+                ),
+                child: Profilescreenwidget(
+                  widgetContext: 'Withdraw Amount',
+                  widgetIcon: Icons.money,
+                  widgetColor: Colors.white,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 18,
+              ),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Support and About',
+                  style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xffEFCC4E),
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ),

@@ -30,7 +30,7 @@ class _InputFieldsState extends State<InputFields> {
   Widget build(BuildContext context) {
     return TextField(
       controller: widget.textController,
-      cursorColor: Colors.black,
+      cursorColor: Colors.black26,
       enableSuggestions: true,
       spellCheckConfiguration: SpellCheckConfiguration(
         spellCheckService: DefaultSpellCheckService(),
@@ -45,6 +45,9 @@ class _InputFieldsState extends State<InputFields> {
         fillColor: Colors.black,
         focusColor: Color(0xffEFCC4E),
         hoverColor: Color(0xffEFCC4E),
+        floatingLabelStyle: TextStyle(
+          color: Color(0xffEFCC4E),
+        ),
         focusedBorder: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(

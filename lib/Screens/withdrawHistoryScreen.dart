@@ -39,7 +39,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
   }
 
   ScrollController scrollController = ScrollController();
-  showDialogBox(String failedText) {
+  showDialogBox(String failedText, int index) {
     showDialog(
       barrierDismissible: true,
       context: context,
@@ -47,20 +47,32 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
         return AlertDialog(
           scrollable: true,
           alignment: Alignment.center,
-          backgroundColor: Colors.red,
+          backgroundColor: widget.tStatus[index] == 'Completed' ||
+                  widget.tStatus[index] == 'completed'
+              ? Color(0xff90EE90)
+              : Colors.red,
           shape: BeveledRectangleBorder(),
           title: Text(
-            'Transaction Failure Reason',
+            widget.tStatus[index] == 'Completed' ||
+                    widget.tStatus[index] == 'completed'
+                ? 'Transaction Success Details'
+                : 'Transaction Failure Reason',
             style: GoogleFonts.poppins(
               fontSize: 18,
-              color: Colors.white,
+              color: widget.tStatus[index] == 'Completed' ||
+                      widget.tStatus[index] == 'completed'
+                  ? Colors.black
+                  : Colors.white,
             ),
           ),
           content: Text(
             failedText,
             textAlign: TextAlign.left,
             style: GoogleFonts.poppins(
-              color: Colors.white,
+              color: widget.tStatus[index] == 'Completed' ||
+                      widget.tStatus[index] == 'completed'
+                  ? Colors.black
+                  : Colors.white,
               fontSize: 14,
             ),
           ),
@@ -72,7 +84,10 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
               child: Text(
                 'Continue',
                 style: GoogleFonts.poppins(
-                  color: Colors.white,
+                  color: widget.tStatus[index] == 'Completed' ||
+                          widget.tStatus[index] == 'completed'
+                      ? Colors.black
+                      : Colors.white,
                 ),
               ),
             ),
@@ -324,14 +339,18 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
                               left: 10,
                               right: 10,
                               top: 10,
+                              bottom: 10,
                             ),
                             child: GestureDetector(
                               onTap: () => setState(() {
                                 widget.isTapped = true;
                                 widget.tStatus[index] == 'Failed' ||
-                                        widget.tStatus[index] == 'failed'
+                                        widget.tStatus[index] == 'failed' ||
+                                        widget.tStatus[index] == 'Completed' ||
+                                        widget.tStatus[index] == 'completed'
                                     ? showDialogBox(
                                         widget.summary[index],
+                                        index,
                                       )
                                     : null;
                               }),
