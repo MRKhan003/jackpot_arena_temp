@@ -29,18 +29,6 @@ class _NotificationscreenState extends State<Notificationscreen> {
     super.initState();
   }
 
-  // loadItems() {
-  //   if (widget.message.isEmpty) {
-  //     setState(() {
-  //       widget.ref = false;
-  //     });
-  //   } else {
-  //     setState(() {
-  //       widget.ref = true;
-  //     });
-  //   }
-  // }
-
   Future<void> setData(String docName) async {
     try {
       QuerySnapshot snapshot =
@@ -58,7 +46,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
     } catch (e) {}
   }
 
-  _getData() async {
+  Future<void> _getData() async {
     try {
       CollectionReference reference =
           FirebaseFirestore.instance.collection('Notifications');
@@ -71,6 +59,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
       print('calling');
       snapshot.docs.forEach((doc) {
         if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+          print('First if');
           if (widget.size != widget.message.length) {
             setState(() {
               widget.message.add(doc['Title']);
@@ -88,11 +77,11 @@ class _NotificationscreenState extends State<Notificationscreen> {
         widget.message.isNotEmpty ? widget.ref = true : widget.ref = false;
         widget.running = 1;
       });
-      return true;
+      //return true;
     } on FirebaseException catch (e) {
       print(e.message.toString());
       print('null');
-      return false;
+      // return false;
     }
   }
 
@@ -132,87 +121,98 @@ class _NotificationscreenState extends State<Notificationscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 8,
-              top: 8,
-            ),
-            child: Container(
-              alignment: Alignment.topLeft,
-              child: Text(
-                'Notifications',
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  color: Colors.black,
+    return RefreshIndicator(
+      onRefresh: () {
+        setState(() {
+          widget.message = [];
+          widget.timeStamps = [];
+          widget.image = [];
+          widget.status = [];
+        });
+        return _getData();
+      },
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(
+                left: 8,
+                top: 8,
+              ),
+              child: Container(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  'Notifications',
+                  style: GoogleFonts.poppins(
+                    fontSize: 18,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-          widget.running == 0
-              ? CircularProgressIndicator(
-                  color: Color(0xffEFCC4E),
-                )
-              : widget.ref == false
-                  ? SizedBox(
-                      height: 100,
-                      child: Center(
-                        child: Text(
-                          'No Notifications!',
-                          textAlign: TextAlign.end,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            //fontWeight: FontWeight.bold,
-                            color: Colors.grey,
+            widget.running == 0
+                ? CircularProgressIndicator(
+                    color: Color(0xffEFCC4E),
+                  )
+                : widget.ref == false
+                    ? SizedBox(
+                        height: 100,
+                        child: Center(
+                          child: Text(
+                            'No Notifications!',
+                            textAlign: TextAlign.end,
+                            style: GoogleFonts.poppins(
+                              fontSize: 16,
+                              //fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                  : Expanded(
-                      child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        itemCount: widget.message.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                              left: 10,
-                              right: 10,
-                              top: 10,
-                              bottom: 10,
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  Notificationscreen.isTapped == true;
-                                });
-                                setData(
-                                  widget.message[index],
-                                );
-
-                                print('tapped...');
-                              },
-                              child: NotificationWidget(
-                                secondaryColor: Colors.white,
-                                //contextIcon2: Icons.mark_email_read_outlined,
-                                imageURL: widget.image[index],
-                                contextText: widget.message[index],
-                                status: widget.status[index],
-                                isOpened: Notificationscreen.isTapped,
-                                contextIcon: widget.status[index] == 'unseen'
-                                    ? Icons.email_outlined
-                                    : Icons.mark_email_read_outlined,
-                                time: widget.timeStamps[index],
-                                amount: null,
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemCount: widget.message.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(
+                                left: 10,
+                                right: 10,
+                                top: 10,
+                                bottom: 10,
                               ),
-                            ),
-                          );
-                        },
+                              child: GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    Notificationscreen.isTapped == true;
+                                  });
+                                  setData(
+                                    widget.message[index],
+                                  );
+
+                                  print('tapped...');
+                                },
+                                child: NotificationWidget(
+                                  secondaryColor: Colors.white,
+                                  //contextIcon2: Icons.mark_email_read_outlined,
+                                  imageURL: widget.image[index],
+                                  contextText: widget.message[index],
+                                  status: widget.status[index],
+                                  isOpened: Notificationscreen.isTapped,
+                                  contextIcon: widget.status[index] == 'unseen'
+                                      ? Icons.email_outlined
+                                      : Icons.mark_email_read_outlined,
+                                  time: widget.timeStamps[index],
+                                  amount: null,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-        ],
+          ],
+        ),
       ),
     );
   }

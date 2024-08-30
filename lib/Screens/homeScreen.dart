@@ -9,12 +9,14 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
+import 'package:jackpot_arena/Providers/bankInfoProvider.dart';
 import 'package:jackpot_arena/Screens/Profile_Screen/Transaction/banksDetails.dart';
 import 'package:jackpot_arena/Screens/Profile_Screen/editProfile.dart';
 import 'package:jackpot_arena/Screens/Profile_Screen/profileScreen.dart';
 import 'package:jackpot_arena/Screens/gamesScreen.dart';
 import 'package:jackpot_arena/Screens/notificationScreen.dart';
 import 'package:jackpot_arena/Screens/withdrawHistoryScreen.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   UserDetails user = UserDetails();
@@ -22,7 +24,7 @@ class HomeScreen extends StatefulWidget {
   int transactionCount = 100;
   int temp = 0;
   String profileImage;
-
+  bool loaded = false;
   bool ref = true;
   HomeScreen({required this.profileImage});
   @override
@@ -100,31 +102,6 @@ class _HomeScreenState extends State<HomeScreen> {
     print(widget.notificationCount);
     print(count);
   }
-
-  // setRefunds() async {
-  //   try {
-  //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-  //         .collection(
-  //           'Transactions',
-  //         )
-  //         .get();
-  //     QuerySnapshot snapshot = await FirebaseFirestore.instance
-  //         .collection(
-  //           'Transactions',
-  //         )
-  //         .where('RefundStatus', isEqualTo: 'no')
-  //         .get();
-  //     querySnapshot.docs.forEach((doc) {
-  //       if (doc['UserID'] == FirebaseAuth.instance.currentUser!.email) {
-  //         if (doc['TStatus'] == 'Failed') {
-  //           for (QueryDocumentSnapshot doc in snapshot.docs) {
-  //             doc.reference.set('yes');
-  //           }
-  //         }
-  //       }
-  //     });
-  //   } catch (e) {}
-  // }
 
   getTransactionCount() async {
     int tcount = 0;
@@ -271,6 +248,20 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  providerFunction() {
+    if (widget.loaded == false) {
+      var bankInfoProvider =
+          Provider.of<Bankinfoprovider>(context, listen: false);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bankInfoProvider.getBankData();
+        bankInfoProvider.loadImages();
+      });
+    }
+    setState(() {
+      widget.loaded = true;
+    });
+  }
+
   @override
   void dispose() {
     subscription.cancel();
@@ -293,6 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
   ];
   @override
   Widget build(BuildContext context) {
+    providerFunction();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

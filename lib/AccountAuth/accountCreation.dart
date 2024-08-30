@@ -188,7 +188,7 @@ class _AccountCreationState extends State<AccountCreation> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => UserLogin(),

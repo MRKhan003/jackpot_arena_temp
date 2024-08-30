@@ -181,11 +181,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       initialValue: widget.bankName,
                       readOnly: true,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffEFCC4E),
-                          ),
-                        ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color(0xffEFCC4E),
@@ -220,11 +215,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       keyboardType: TextInputType.name,
                       readOnly: false,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffEFCC4E),
-                          ),
-                        ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color(0xffEFCC4E),
@@ -291,17 +281,12 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       ),
                       readOnly: false,
                       decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffEFCC4E),
-                          ),
-                        ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color(0xffEFCC4E),
                           ),
                         ),
-                        labelText: 'Display Name',
+                        labelText: 'Account Title',
                         floatingLabelStyle: TextStyle(
                           color: Color(0xffEFCC4E),
                         ),
@@ -313,7 +298,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                           return 'Please enter account display name';
                         }
 
-                        // Additional validation if needed
                         return null; // Return null if validation passes
                       },
                     ),
@@ -337,12 +321,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       keyboardType: TextInputType.number,
                       readOnly: false,
                       decoration: InputDecoration(
-                        //hoverColor: Color(0xffEFCC4E),
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Color(0xffEFCC4E),
-                          ),
-                        ),
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color(0xffEFCC4E),
@@ -420,8 +398,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                   setState(() {
                     widget.checking = 1;
                   });
-                  //_formKey.currentState!.reset();
-                  //widget.transactioncontroller.accountNumberController == 0;
                 } else {
                   Fluttertoast.showToast(
                     msg: 'Recheck your information and try again!',

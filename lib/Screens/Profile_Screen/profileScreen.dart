@@ -217,9 +217,7 @@ class _ProfilescreenState extends State<Profilescreen> {
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: RoundedLoadingButton(
-                color: Color(
-                  0xffEFCC4E,
-                ),
+                color: Colors.red,
                 controller: widget.buttonController,
                 onPressed: () {
                   Firebasefunctions().logout(context);

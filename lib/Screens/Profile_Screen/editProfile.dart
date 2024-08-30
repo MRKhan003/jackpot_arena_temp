@@ -364,12 +364,17 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                           ),
                         ),
-                        child: Container(
-                          alignment: Alignment.topLeft,
-                          child: Icon(
-                            Icons.arrow_circle_left_sharp,
-                            size: 36,
-                            color: Color(0xffEFCC4E),
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                          child: Container(
+                            alignment: Alignment.topLeft,
+                            child: Icon(
+                              Icons.arrow_back,
+                              size: 28,
+                              color: Color(0xffEFCC4E),
+                            ),
                           ),
                         ),
                       ),

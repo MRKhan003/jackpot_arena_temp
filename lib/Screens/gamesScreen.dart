@@ -11,6 +11,7 @@ class GamesScreen extends StatefulWidget {
   State<GamesScreen> createState() => _GamesScreenState();
   List<Searchitems> searchList = allItems;
   bool isActive = true;
+  bool addLoaded = false;
 
   List<String> ListImages = [
     'assets/Plane Crash.png',
@@ -58,16 +59,6 @@ class _GamesScreenState extends State<GamesScreen> {
   }
 
   TextEditingController searchController = TextEditingController();
-  final List<String> items = [
-    'A_Item1',
-    'A_Item2',
-    'A_Item3',
-    'A_Item4',
-    'B_Item1',
-    'B_Item2',
-    'B_Item3',
-    'B_Item4',
-  ];
 
   String? selectedValue;
   final TextEditingController textEditingController = TextEditingController();
@@ -85,11 +76,11 @@ class _GamesScreenState extends State<GamesScreen> {
   );
   @override
   void initState() {
-    super.initState();
     _createBannerAd();
+    super.initState();
   }
 
-  void _createBannerAd() {
+  _createBannerAd() {
     print(
         '--------------helloooooooooooooooooooooooooo _createBannerAd------------');
     _bannerAd = BannerAd(
@@ -297,7 +288,11 @@ class _GamesScreenState extends State<GamesScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 child: _bannerAd == null
-                    ? CircularProgressIndicator()
+                    ? CircularProgressIndicator(
+                        color: Color(
+                          0xffECB607,
+                        ),
+                      )
                     : AdWidget(ad: _bannerAd!),
                 height: 50,
                 //width: 300,
@@ -366,17 +361,4 @@ class _GamesScreenState extends State<GamesScreen> {
       widget.searchList = suggestions;
     });
   }
-
-  // searchListItems() {
-  //   return ListView.builder(
-  //     scrollDirection: Axis.vertical,
-  //     itemCount: widget.ListImages.length,
-  //     itemBuilder: (context, index) {
-  //       return ListTile(
-  //         leading: Image.asset(widget.ListImages[index]),
-  //         title: Text(widget.ListText[index]),
-  //       );
-  //     },
-  //   );
-  // }
 }

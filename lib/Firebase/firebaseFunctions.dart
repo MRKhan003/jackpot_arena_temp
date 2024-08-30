@@ -113,7 +113,6 @@ class Firebasefunctions with ChangeNotifier {
   Future<bool> loggingIn(
       String email, String pass, BuildContext context) async {
     String profileImage = '';
-    //FirebaseAuth loginAuth = FirebaseAuth.instance;
     try {
       print('Testing...');
       UserCredential loginCredential = await FirebaseAuth.instance
