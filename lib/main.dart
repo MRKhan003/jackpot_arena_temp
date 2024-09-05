@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:jackpot_arena/Providers/bankInfoProvider.dart';
-import 'package:jackpot_arena/Screens/Profile_Screen/Transaction/banksDetails.dart';
 import 'package:jackpot_arena/Startup/splashScreen.dart';
 import 'package:jackpot_arena/firebase_options.dart';
 import 'package:provider/provider.dart';

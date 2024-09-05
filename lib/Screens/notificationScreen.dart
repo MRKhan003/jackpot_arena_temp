@@ -122,6 +122,8 @@ class _NotificationscreenState extends State<Notificationscreen> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      color: Color(0xffEFCC4E),
+      backgroundColor: Colors.white,
       onRefresh: () {
         setState(() {
           widget.message = [];
