@@ -64,6 +64,7 @@ dependencies:
   firebase_storage:
   firebase_app_check:
   animated_search_bar:
+  flutter_unity_widget: ^2022.2.1
 
 dev_dependencies:
   flutter_test:

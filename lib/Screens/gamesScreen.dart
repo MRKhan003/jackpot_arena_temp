@@ -271,12 +271,14 @@ class _GamesScreenState extends State<GamesScreen> {
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
-                    //final search = widget.searchList[index];
                     return Padding(
                       padding: const EdgeInsets.only(left: 20),
-                      child: HomeCard(
-                        cardImage: widget.ListImages[index],
-                        cardText: widget.ListText[index],
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: HomeCard(
+                          cardImage: widget.ListImages[index],
+                          cardText: widget.ListText[index],
+                        ),
                       ),
                     );
                   },

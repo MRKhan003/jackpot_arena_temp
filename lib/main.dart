@@ -11,10 +11,12 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   //await FirebaseApi().initNotifications() ;
-  runApp(ChangeNotifierProvider(
-    create: (context) => Bankinfoprovider(),
-    child: MyApp(),
-  ));
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => Bankinfoprovider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

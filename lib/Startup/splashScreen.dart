@@ -4,10 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:jackpot_arena/Providers/bankInfoProvider.dart';
 import 'package:jackpot_arena/Screens/homeScreen.dart';
 import 'package:jackpot_arena/Startup/Onboarding/screen1.dart';
-import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   String profileImage = '';
@@ -60,20 +58,6 @@ class _SplashScreenState extends State<SplashScreen> {
       });
     }
   }
-
-  // providerFunction() {
-  //   if (widget.loaded == false) {
-  //     var bankInfoProvider =
-  //         Provider.of<Bankinfoprovider>(context, listen: false);
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       bankInfoProvider.getBankData();
-  //       bankInfoProvider.loadImages();
-  //     });
-  //   }
-  //   setState(() {
-  //     widget.loaded = true;
-  //   });
-  // }
 
   @override
   Widget build(BuildContext context) {
