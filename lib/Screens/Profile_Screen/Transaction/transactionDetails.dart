@@ -308,7 +308,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                           setState(() {
                             widget.amountValueValidate = false;
                           });
-                        } else if (amountValue == "0") {
+                        } else if (amountValue == "0" ||
+                            int.parse(amountValue) >
+                                int.parse(
+                                  (widget.userDetails.realMoney).toString(),
+                                )) {
                           widget.amountValueValidate = false;
                         } else {
                           setState(() {
@@ -336,8 +340,12 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                         if (amountValue!.isEmpty &&
                             widget.amountValueValidate == false) {
                           return 'Please enter a valid amount';
-                        } else if (amountValue == '0' &&
-                            widget.amountValueValidate == false) {
+                        } else if (amountValue == '0' ||
+                            int.parse(amountValue) >
+                                    int.parse(
+                                      (widget.userDetails.realMoney).toString(),
+                                    ) &&
+                                widget.amountValueValidate == false) {
                           return 'Please select a amount between 1 - ${widget.userDetails.realMoney}';
                         }
 
