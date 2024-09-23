@@ -120,7 +120,7 @@ class Firebasefunctions with ChangeNotifier {
 
       FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .get()
           .then((DocumentSnapshot doc) {
         profileImage = doc['ProfileImage'];
@@ -131,7 +131,7 @@ class Firebasefunctions with ChangeNotifier {
             msg: "Welcome back " +
                 await FirebaseFirestore.instance
                     .collection('Users')
-                    .doc(FirebaseAuth.instance.currentUser!.email)
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
                     .get()
                     .then((DocumentSnapshot doc) {
                   return doc['UserName'];
@@ -283,7 +283,7 @@ class Firebasefunctions with ChangeNotifier {
           )
           .where(
             'UserID',
-            isEqualTo: FirebaseAuth.instance.currentUser!.email,
+            isEqualTo: FirebaseAuth.instance.currentUser!.uid,
           )
           .get();
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {

@@ -45,7 +45,7 @@ class _EditProfileState extends State<EditProfile> {
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance.collection('Users').get();
       snapshot.docs.forEach((doc) {
-        if (doc['UserEmail'] == widget.currentUser) {
+        if (doc['UserEmail'] == FirebaseAuth.instance.currentUser!.email) {
           setState(() {
             widget.profileImage = doc['ProfileImage'];
             widget.running = 0;
@@ -150,8 +150,8 @@ class _EditProfileState extends State<EditProfile> {
         // Update the display name in Firestore
         await FirebaseFirestore.instance
             .collection('Users')
-            .doc(widget
-                .currentUser) // Replace with the current user's document ID
+            .doc(FirebaseAuth.instance.currentUser!
+                .uid) // Replace with the current user's document ID
             .update({'UserName': newDisplayName});
 
         // Clear the error message and provide user feedback
@@ -183,8 +183,8 @@ class _EditProfileState extends State<EditProfile> {
         // Update the display name in Firestore
         await FirebaseFirestore.instance
             .collection('Users')
-            .doc(widget
-                .currentUser) // Replace with the current user's document ID
+            .doc(FirebaseAuth.instance.currentUser!
+                .uid) // Replace with the current user's document ID
             .update({'UserEmail': newEmail});
 
         // Clear the error message and provide user feedback
@@ -216,8 +216,8 @@ class _EditProfileState extends State<EditProfile> {
         // Update the display name in Firestore
         await FirebaseFirestore.instance
             .collection('Users')
-            .doc(widget
-                .currentUser) // Replace with the current user's document ID
+            .doc(FirebaseAuth.instance.currentUser!
+                .uid) // Replace with the current user's document ID
             .update({'Name': newUserName});
 
         // Clear the error message and provide user feedback
@@ -303,9 +303,8 @@ class _EditProfileState extends State<EditProfile> {
         //deleteImage();
         await widget._firestore
             .collection('Users')
-            .doc(
-              widget.currentUser,
-            ) // Replace with the current user's document ID
+            .doc(FirebaseAuth.instance.currentUser!
+                .uid) // Replace with the current user's document ID
             .update({'ProfileImage': imageUrl});
         getProfileImage();
         setState(() {

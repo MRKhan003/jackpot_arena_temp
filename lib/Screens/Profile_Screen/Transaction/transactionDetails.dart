@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jackpot_arena/Controllers/transactionController.dart';
 import 'package:jackpot_arena/Firebase/userDetails.dart';
@@ -28,12 +29,49 @@ class Transactiondetails extends StatefulWidget {
 }
 
 class _TransactiondetailsState extends State<Transactiondetails> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
-    super.initState();
     getCurrentUser();
     getData();
+    super.initState();
+  }
+
+  String? _validateAccountNumber(String? value) {
+    // Logic to determine valid lengths based on selected bank
+    if (widget.bankName == 'JS Bank') {
+      if (value!.length != 4) {
+        return 'Account number must be 4 characters long for ${widget.bankName}';
+      }
+    } else if (widget.bankName == 'Jazz Cash' ||
+        widget.bankName == 'NayaPay' ||
+        widget.bankName == 'SadaPay' ||
+        widget.bankName == 'EasyPaisa' ||
+        widget.bankName == 'Upaisa') {
+      if (value!.length != 11) {
+        return 'Account number must be 11 characters long for Bank2';
+      }
+    } else {
+      if (value!.length != 14) {
+        return 'Account number must be 14 characters long for Bank3';
+      }
+    }
+    return null; // Return null if validation passes
+  }
+
+  String? _validateAccountTitle(String? accountTitle) {
+    if (accountTitle == null || accountTitle.contains(RegExp(r'[0-9]'))) {
+      return 'Please enter correct account title';
+    } else {
+      return null;
+    }
+  }
+
+  String? _validateAmount(String? amount) {
+    if (widget.userDetails.realMoney!.isLowerThan(int.parse(amount!))) {
+      return 'Amount must be between 1-${widget.userDetails.realMoney}';
+    } else
+      return null;
   }
 
   updateData() async {
@@ -48,7 +86,7 @@ class _TransactiondetailsState extends State<Transactiondetails> {
       print(FirebaseAuth.instance.currentUser!.uid);
       await FirebaseFirestore.instance
           .collection('Users')
-          .doc(widget.userDetails.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Earning')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .update({
@@ -69,17 +107,18 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         textColor: Colors.red,
         fontSize: 16.0,
       );
-      print(e.message.toString());
+      print(
+        e.message.toString(),
+      );
       return false;
     }
   }
 
   getData() async {
-    //UserDetails setUser = UserDetails();
     try {
       CollectionReference getDataReference = FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Earning');
       QuerySnapshot snapshot = await getDataReference.get();
       snapshot.docs.forEach((doc) {
@@ -90,7 +129,9 @@ class _TransactiondetailsState extends State<Transactiondetails> {
 
       return true;
     } on FirebaseException catch (e) {
-      print(e.message.toString());
+      print(
+        e.message.toString(),
+      );
       return false;
     }
   }
@@ -101,7 +142,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
       setState(() {
         widget.userDetails.email = email;
       });
-
       print(widget.userDetails.email);
     } catch (e) {
       print(e);
@@ -170,9 +210,6 @@ class _TransactiondetailsState extends State<Transactiondetails> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Form(
-                autovalidateMode: widget.checking == 0
-                    ? AutovalidateMode.onUserInteraction
-                    : AutovalidateMode.disabled,
                 key: _formKey,
                 child: Column(
                   children: [
@@ -195,24 +232,9 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                     ),
                     TextFormField(
                       cursorColor: Colors.black26,
-                      onChanged: (accountValue) {
-                        if (accountValue.isEmpty) {
-                          setState(() {
-                            widget.accountValueValidate = false;
-                          });
-                        } else if (accountValue.length != 14) {
-                          setState(() {
-                            widget.accountValueValidate = false;
-                          });
-                        } else {
-                          setState(() {
-                            widget.accountValueValidate = true;
-                          });
-                        }
-                      },
                       controller:
                           widget.transactioncontroller.accountNumberController,
-                      keyboardType: TextInputType.name,
+                      keyboardType: TextInputType.number,
                       readOnly: false,
                       decoration: InputDecoration(
                         focusedBorder: UnderlineInputBorder(
@@ -237,43 +259,10 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                               ? 4
                               : 14,
                       maxLengthEnforcement: MaxLengthEnforcement.enforced,
-                      // Set maximum length to 14 digits
-                      validator: (accountValue) {
-                        if (accountValue!.isEmpty &&
-                            widget.accountValueValidate == false) {
-                          return 'Please enter account number';
-                        }
-                        if (accountValue.length < 11 ||
-                            accountValue.length > 14 &&
-                                widget.accountValueValidate == false) {
-                          if (widget.bankName == 'Jazz Cash' ||
-                              widget.bankName == 'NayaPay' ||
-                              widget.bankName == 'SadaPay' ||
-                              widget.bankName == 'EasyPaisa' ||
-                              widget.bankName == 'Upaisa') {
-                            return 'Account number should be of 11 digits';
-                          } else if (widget.bankName == 'JS Bank') {
-                            return 'Account number should be of 4 digits';
-                          } else
-                            return 'Account number should be between of 14 digits';
-                        }
-                        // Additional validation if needed
-                        return null; // Return null if validation passes
-                      },
+                      validator: _validateAccountNumber,
                     ),
                     TextFormField(
                       cursorColor: Colors.black26,
-                      onChanged: (displayValue) {
-                        if (displayValue.isEmpty) {
-                          setState(() {
-                            widget.displayValueValidate = false;
-                          });
-                        } else {
-                          setState(() {
-                            widget.displayValueValidate = true;
-                          });
-                        }
-                      },
                       controller: widget.transactioncontroller.nameController,
                       keyboardType: TextInputType.name,
                       spellCheckConfiguration: SpellCheckConfiguration(
@@ -292,35 +281,10 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                      validator: (displayValue) {
-                        if (displayValue!.isEmpty &&
-                            widget.displayValueValidate == false) {
-                          return 'Please enter account display name';
-                        }
-
-                        return null; // Return null if validation passes
-                      },
+                      validator: _validateAccountTitle,
                     ),
                     TextFormField(
                       cursorColor: Colors.black26,
-                      onChanged: (amountValue) {
-                        if (amountValue.isEmpty) {
-                          setState(() {
-                            widget.amountValueValidate = false;
-                          });
-                        } else if (amountValue == "0" ||
-                            int.parse(amountValue) >
-                                int.parse(
-                                  (widget.userDetails.realMoney).toString(),
-                                )) {
-                          widget.amountValueValidate = false;
-                        } else {
-                          setState(() {
-                            widget.amountValueValidate = true;
-                            widget.userAmount = int.parse(amountValue);
-                          });
-                        }
-                      },
                       controller: widget.transactioncontroller.amountController,
                       keyboardType: TextInputType.number,
                       readOnly: false,
@@ -336,92 +300,59 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                         ),
                         floatingLabelBehavior: FloatingLabelBehavior.always,
                       ),
-                      validator: (amountValue) {
-                        if (amountValue!.isEmpty &&
-                            widget.amountValueValidate == false) {
-                          return 'Please enter a valid amount';
-                        } else if (amountValue == '0' ||
-                            int.parse(amountValue) >
-                                    int.parse(
-                                      (widget.userDetails.realMoney).toString(),
-                                    ) &&
-                                widget.amountValueValidate == false) {
-                          return 'Please select a amount between 1 - ${widget.userDetails.realMoney}';
-                        }
-
-                        // Additional validation if needed
-                        return null; // Return null if validation passes
-                      },
+                      validator: _validateAmount,
                       onFieldSubmitted: (amountValue) {
                         amountValue = '';
                       },
                     ),
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStatePropertyAll(
+                          Color(0xffEFCC4E),
+                        ),
+                      ),
+                      onPressed: () {
+                        print(
+                          widget.transactioncontroller.accountNumberController
+                              .text,
+                        );
+                        if (_formKey.currentState!.validate()) {
+                          setTransactionData(
+                            widget.bankName,
+                            widget.transactioncontroller.accountNumberController
+                                .text,
+                            int.parse(widget
+                                .transactioncontroller.amountController.text),
+                            widget.transactioncontroller.nameController.text,
+                            widget.bankIcon,
+                          );
+                          widget.transactioncontroller.nameController.clear();
+                          widget.transactioncontroller.accountNumberController
+                              .clear();
+                          widget.transactioncontroller.amountController.clear();
+                          setState(() {
+                            widget.checking = 1;
+                          });
+                        } else {
+                          Fluttertoast.showToast(
+                            msg: 'Recheck your information and try again!',
+                            toastLength: Toast.LENGTH_LONG,
+                            gravity: ToastGravity.BOTTOM,
+                            timeInSecForIosWeb: 3,
+                            backgroundColor: Color(0xffF8F8F8),
+                            textColor: Colors.red,
+                            fontSize: 16.0,
+                          );
+                        }
+                      },
+                      child: Text(
+                        'Submit',
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ],
-                ),
-              ),
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(
-                  Color(0xffEFCC4E),
-                ),
-              ),
-              onPressed: () {
-                print(
-                  int.parse(
-                    widget.transactioncontroller.amountController.text,
-                  ),
-                );
-                if (widget.transactioncontroller.accountNumberController.text
-                        .isNotEmpty &&
-                    widget.transactioncontroller.amountController.text
-                        .isNotEmpty &&
-                    widget
-                        .transactioncontroller.nameController.text.isNotEmpty &&
-                    widget.userDetails.realMoney! >=
-                        int.parse(
-                          widget.transactioncontroller.amountController.text,
-                        ) &&
-                    int.parse(
-                          widget.transactioncontroller.amountController.text,
-                        ) !=
-                        0 &&
-                    widget.transactioncontroller.accountNumberController.text
-                            .length >=
-                        11 &&
-                    widget.transactioncontroller.accountNumberController.text
-                            .length <=
-                        14) {
-                  setTransactionData(
-                    widget.bankName,
-                    widget.transactioncontroller.accountNumberController.text,
-                    int.parse(
-                        widget.transactioncontroller.amountController.text),
-                    widget.transactioncontroller.nameController.text,
-                    widget.bankIcon,
-                  );
-                  widget.transactioncontroller.nameController.clear();
-                  widget.transactioncontroller.accountNumberController.clear();
-                  widget.transactioncontroller.amountController.clear();
-                  setState(() {
-                    widget.checking = 1;
-                  });
-                } else {
-                  Fluttertoast.showToast(
-                    msg: 'Recheck your information and try again!',
-                    toastLength: Toast.LENGTH_LONG,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 3,
-                    backgroundColor: Color(0xffF8F8F8),
-                    textColor: Colors.red,
-                    fontSize: 16.0,
-                  );
-                }
-              },
-              child: Text(
-                'Submit',
-                style: GoogleFonts.poppins(
-                  color: Colors.white,
                 ),
               ),
             ),

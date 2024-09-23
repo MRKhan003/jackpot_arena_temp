@@ -30,7 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print(FirebaseAuth.instance.currentUser!.email);
       FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .get()
           .then((DocumentSnapshot doc) {
         setState(() {

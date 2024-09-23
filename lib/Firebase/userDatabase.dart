@@ -8,7 +8,7 @@ class UserDatabase {
   final FirebaseFirestore ffObject = FirebaseFirestore.instance;
   Future<bool> sendUserData(UserDetails details) async {
     try {
-      await ffObject.collection('Users').doc(details.email).set({
+      await ffObject.collection('Users').doc(details.userID).set({
         'UserID': details.userID,
         'UserName': details.userName,
         'UserEmail': details.email,

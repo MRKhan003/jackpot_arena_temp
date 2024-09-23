@@ -85,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       QuerySnapshot snapshot = await reference.get();
       print('calling');
       snapshot.docs.forEach((doc) {
-        if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserEmail'] &&
             doc['Status'] == 'unseen') {
           if (count != widget.notificationCount) {
             count++;
@@ -111,11 +111,11 @@ class _HomeScreenState extends State<HomeScreen> {
       QuerySnapshot snapshot = await reference.get();
       QuerySnapshot querySnapshot = await FirebaseFirestore.instance
           .collection('Transactions')
-          .where('UserID', isEqualTo: FirebaseAuth.instance.currentUser!.email)
+          .where('UserID', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get();
       print('calling');
       snapshot.docs.forEach((doc) {
-        if (FirebaseAuth.instance.currentUser!.email == doc['UserID'] &&
+        if (FirebaseAuth.instance.currentUser!.uid == doc['UserID'] &&
             doc['Status'] == 'unseen' &&
             doc['TStatus'] == 'Failed') {
           if (tcount != widget.transactionCount) {
@@ -125,7 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
             refund = doc['Amount'];
             FirebaseFirestore.instance
                 .collection('Users')
-                .doc(FirebaseAuth.instance.currentUser!.email)
+                .doc(FirebaseAuth.instance.currentUser!.uid)
                 .collection('Earning')
                 .doc(FirebaseAuth.instance.currentUser!.uid)
                 .update({
@@ -156,11 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getData() async {
-    //getNotificationCount();
     try {
       CollectionReference getDataReference = FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Earning');
       QuerySnapshot snapshot = await getDataReference.get();
       snapshot.docs.forEach((doc) {

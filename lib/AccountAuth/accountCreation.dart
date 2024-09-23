@@ -140,20 +140,22 @@ class _AccountCreationState extends State<AccountCreation> {
                     controller.passwordController.text ==
                         controller.passwordConfirmController.text) {
                   Firebasefunctions().signUp(
-                      controller.emailController.text,
-                      controller.passwordController.text,
-                      controller.userNameController.text,
-                      controller.nameController.text,
-                      context);
+                    controller.emailController.text,
+                    controller.passwordController.text,
+                    controller.userNameController.text,
+                    controller.nameController.text,
+                    context,
+                  );
                 } else {
                   Fluttertoast.showToast(
-                      msg: "Fill all fields",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.BOTTOM,
-                      timeInSecForIosWeb: 5,
-                      backgroundColor: Color(0xffF8F8F8),
-                      textColor: Colors.red,
-                      fontSize: 16.0);
+                    msg: "Fill all fields",
+                    toastLength: Toast.LENGTH_SHORT,
+                    gravity: ToastGravity.BOTTOM,
+                    timeInSecForIosWeb: 5,
+                    backgroundColor: Color(0xffF8F8F8),
+                    textColor: Colors.red,
+                    fontSize: 16.0,
+                  );
                 }
               },
               child: Text(

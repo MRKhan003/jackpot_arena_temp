@@ -102,7 +102,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
     try {
       CollectionReference getDataReference = FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('Earning');
       QuerySnapshot snapshot = await getDataReference.get();
       snapshot.docs.forEach((doc) {
@@ -126,7 +126,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
           await FirebaseFirestore.instance.collection('Transactions').get();
       print('Loading...');
       snapshot.docs.forEach((doc) {
-        if (doc['UserID'] == widget.currentUser) {
+        if (doc['UserID'] == FirebaseAuth.instance.currentUser!.uid) {
           doc.reference.update({'Status': 'Seen'});
         }
       });
@@ -142,7 +142,7 @@ class _WithdrawhistoryscreenState extends State<Withdrawhistoryscreen> {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('Transactions').get();
       querySnapshot.docs.forEach((doc) {
-        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+        if (FirebaseAuth.instance.currentUser!.uid == doc['UserID']) {
           setState(() {
             widget.getLength.add(
               doc['Bank'],

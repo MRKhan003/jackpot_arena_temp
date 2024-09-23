@@ -26,32 +26,6 @@ class _BanksdetailsState extends State<Banksdetails> {
   @override
   Widget build(BuildContext context) {
     var bankInfoProvider = Provider.of<Bankinfoprovider>(context);
-    // widget.filteredName = bankInfoProvider.bankName;
-    // widget.filteredLogo = bankInfoProvider.bankLogo;
-    // void _filterItems() {
-    //   List<String> results = [];
-    //   List<String> logoResult = [];
-    //   if (widget.searchController.text.isEmpty) {
-    //     results = bankInfoProvider.bankName;
-    //     logoResult = bankInfoProvider.bankLogo;
-    //   } else {
-    //     results = bankInfoProvider.bankName
-    //         .where((item) => item.toLowerCase().contains(
-    //               widget.searchController.text.toLowerCase(),
-    //             ))
-    //         .toList();
-    //     logoResult = bankInfoProvider.bankLogo
-    //         .where((items) => items.toLowerCase().contains(
-    //               widget.searchController.text.toLowerCase(),
-    //             ))
-    //         .toList();
-    //   }
-    //   setState(() {
-    //     widget.filteredName = results;
-    //     widget.filteredLogo = logoResult;
-    //   });
-    // }
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(

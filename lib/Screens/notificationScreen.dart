@@ -11,7 +11,7 @@ class Notificationscreen extends StatefulWidget {
   List<Timestamp> timeStamps = [];
   List<String> status = [];
   int size = 100;
-  String? currentUser;
+  //String? currentUser;
   static bool isTapped = false;
   int notificationCount = 100;
   bool ref = true;
@@ -58,7 +58,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
           .get();
       print('calling');
       snapshot.docs.forEach((doc) {
-        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserEmail']) {
           print('First if');
           if (widget.size != widget.message.length) {
             setState(() {
@@ -72,7 +72,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
         }
       });
       setState(() {
-        widget.currentUser = FirebaseAuth.instance.currentUser!.email;
+        //widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.message.length;
         widget.message.isNotEmpty ? widget.ref = true : widget.ref = false;
         widget.running = 1;
@@ -95,7 +95,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
       QuerySnapshot snapshot = await reference.get();
       print('calling');
       snapshot.docs.forEach((doc) {
-        if (FirebaseAuth.instance.currentUser!.email == doc['UserID']) {
+        if (FirebaseAuth.instance.currentUser!.email == doc['UserEmail']) {
           if (widget.size != widget.message.length) {
             setState(() {
               widget.message.add(doc['Title']);
@@ -107,7 +107,7 @@ class _NotificationscreenState extends State<Notificationscreen> {
         }
       });
       setState(() {
-        widget.currentUser = FirebaseAuth.instance.currentUser!.email;
+        //widget.currentUser = FirebaseAuth.instance.currentUser!.email;
         widget.size = widget.message.length;
       });
 
