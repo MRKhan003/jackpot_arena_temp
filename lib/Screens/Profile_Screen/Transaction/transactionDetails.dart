@@ -49,11 +49,11 @@ class _TransactiondetailsState extends State<Transactiondetails> {
         widget.bankName == 'EasyPaisa' ||
         widget.bankName == 'Upaisa') {
       if (value!.length != 11) {
-        return 'Account number must be 11 characters long for Bank2';
+        return 'Account number must be 11 characters long for ${widget.bankName}';
       }
     } else {
       if (value!.length != 14) {
-        return 'Account number must be 14 characters long for Bank3';
+        return 'Account number must be 14 characters long for ${widget.bankName}';
       }
     }
     return null; // Return null if validation passes
@@ -304,6 +304,9 @@ class _TransactiondetailsState extends State<Transactiondetails> {
                       onFieldSubmitted: (amountValue) {
                         amountValue = '';
                       },
+                    ),
+                    SizedBox(
+                      height: 15,
                     ),
                     ElevatedButton(
                       style: ButtonStyle(

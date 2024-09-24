@@ -22,13 +22,13 @@ class _UserLoginState extends State<UserLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Container(
+              height: 56,
+              color: Colors.white,
+            ),
             Center(
               child: SvgPicture.asset(
                 "assets/JACKPOTARENA.svg",

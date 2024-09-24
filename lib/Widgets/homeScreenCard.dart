@@ -3,7 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 
 class HomeCard extends StatelessWidget {
   String cardText, cardImage;
+  Color cardColor;
   HomeCard({
+    required this.cardColor,
     required this.cardImage,
     required this.cardText,
   });
@@ -11,7 +13,7 @@ class HomeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white,
+      color: cardColor,
       surfaceTintColor: Colors.white,
       elevation: 0,
       clipBehavior: Clip.none,

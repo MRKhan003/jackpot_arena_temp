@@ -282,8 +282,8 @@ class Firebasefunctions with ChangeNotifier {
             'Notifications',
           )
           .where(
-            'UserID',
-            isEqualTo: FirebaseAuth.instance.currentUser!.uid,
+            'UserEmail',
+            isEqualTo: FirebaseAuth.instance.currentUser!.email,
           )
           .get();
       for (QueryDocumentSnapshot doc in querySnapshot.docs) {
