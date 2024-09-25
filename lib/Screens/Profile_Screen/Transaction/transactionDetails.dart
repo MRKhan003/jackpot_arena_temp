@@ -12,7 +12,7 @@ class Transactiondetails extends StatefulWidget {
   String bankName;
   String bankIcon;
   UserDetails userDetails = UserDetails();
-  Transactioncontroller transactioncontroller = Transactioncontroller();
+  final Transactioncontroller transactioncontroller = Transactioncontroller();
   int userAmount = 0;
   int checking = 0;
   bool? validate;

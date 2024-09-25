@@ -216,16 +216,19 @@ class _ProfilescreenState extends State<Profilescreen> {
             //Spacer(),
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: RoundedLoadingButton(
-                color: Colors.red,
-                controller: widget.buttonController,
-                onPressed: () {
-                  Firebasefunctions().logout(context);
-                },
-                child: Text(
-                  'Logout',
-                  style: GoogleFonts.poppins(
-                    color: Colors.white,
+              child: Hero(
+                tag: Text('Pressed'),
+                child: RoundedLoadingButton(
+                  color: Colors.red,
+                  controller: widget.buttonController,
+                  onPressed: () {
+                    Firebasefunctions().logout(context);
+                  },
+                  child: Text(
+                    'Logout',
+                    style: GoogleFonts.poppins(
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

@@ -125,45 +125,48 @@ class _AccountCreationState extends State<AccountCreation> {
                 fieldIcon: Icons.visibility_off,
               ),
             ),
-            RoundedLoadingButton(
-              controller: buttonController,
-              resetAfterDuration: true,
-              completionDuration: const Duration(seconds: 3),
-              resetDuration: const Duration(seconds: 5),
-              color: const Color(0xffF8B31A),
-              onPressed: () {
-                if (controller.nameController.text.isNotEmpty &&
-                    controller.emailController.text.isNotEmpty &&
-                    controller.userNameController.text.isNotEmpty &&
-                    controller.passwordController.text.isNotEmpty &&
-                    controller.passwordConfirmController.text.isNotEmpty &&
-                    controller.passwordController.text ==
-                        controller.passwordConfirmController.text) {
-                  Firebasefunctions().signUp(
-                    controller.emailController.text,
-                    controller.passwordController.text,
-                    controller.userNameController.text,
-                    controller.nameController.text,
-                    context,
-                  );
-                } else {
-                  Fluttertoast.showToast(
-                    msg: "Fill all fields",
-                    toastLength: Toast.LENGTH_SHORT,
-                    gravity: ToastGravity.BOTTOM,
-                    timeInSecForIosWeb: 5,
-                    backgroundColor: Color(0xffF8F8F8),
-                    textColor: Colors.red,
-                    fontSize: 16.0,
-                  );
-                }
-              },
-              child: Text(
-                'SIGN UP',
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
+            Hero(
+              tag: Text('Pressed'),
+              child: RoundedLoadingButton(
+                controller: buttonController,
+                resetAfterDuration: true,
+                completionDuration: const Duration(seconds: 3),
+                resetDuration: const Duration(seconds: 5),
+                color: const Color(0xffF8B31A),
+                onPressed: () {
+                  if (controller.nameController.text.isNotEmpty &&
+                      controller.emailController.text.isNotEmpty &&
+                      controller.userNameController.text.isNotEmpty &&
+                      controller.passwordController.text.isNotEmpty &&
+                      controller.passwordConfirmController.text.isNotEmpty &&
+                      controller.passwordController.text ==
+                          controller.passwordConfirmController.text) {
+                    Firebasefunctions().signUp(
+                      controller.emailController.text,
+                      controller.passwordController.text,
+                      controller.userNameController.text,
+                      controller.nameController.text,
+                      context,
+                    );
+                  } else {
+                    Fluttertoast.showToast(
+                      msg: "Fill all fields",
+                      toastLength: Toast.LENGTH_SHORT,
+                      gravity: ToastGravity.BOTTOM,
+                      timeInSecForIosWeb: 5,
+                      backgroundColor: Color(0xffF8F8F8),
+                      textColor: Colors.red,
+                      fontSize: 16.0,
+                    );
+                  }
+                },
+                child: Text(
+                  'SIGN UP',
+                  style: GoogleFonts.poppins(
+                    fontSize: 16,
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
