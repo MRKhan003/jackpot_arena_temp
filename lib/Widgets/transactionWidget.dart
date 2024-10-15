@@ -59,7 +59,7 @@ class Transactionwidget extends StatelessWidget {
                     alignment: Alignment.bottomLeft,
                     child: Text(
                       textAlign: TextAlign.start,
-                      DateFormat('EEEE d, y ').format(
+                      DateFormat('EEEE M-d-y').format(
                         time.toDate(),
                       ),
                       style: GoogleFonts.poppins(

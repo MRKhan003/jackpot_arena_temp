@@ -70,7 +70,7 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                     alignment: Alignment.bottomLeft,
                     child: Text(
                       textAlign: TextAlign.start,
-                      DateFormat('EEEE d, y ').format(
+                      DateFormat('EEEE M-d-y ').format(
                         widget.time != null ? widget.time!.toDate() : now,
                       ),
                       style: GoogleFonts.poppins(
